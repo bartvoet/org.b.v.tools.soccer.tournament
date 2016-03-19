@@ -6,8 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -22,6 +24,7 @@ public class GroupDialog extends JDialog {
 	
 	private DefaultTableModel model;
 	private JTextField name = new JTextField();
+	private JComboBox<String> combo = new JComboBox<String>();
 
 	private JButton addButton;
 	private JButton deleteButton;
@@ -56,6 +59,7 @@ public class GroupDialog extends JDialog {
         
         infoPanel.add(new JLabel("Naam groep"));
         infoPanel.add(name);
+        infoPanel.add(combo);
         add(infoPanel,BorderLayout.NORTH);
 	}
 
@@ -146,7 +150,14 @@ public class GroupDialog extends JDialog {
 	}
 
 
-	public void clear() {
+	public void prepareCleanScreen() {
+		name.setText("");
+		
+		for(String groupName : gamesRepository.getAllGroups()) {
+			combo.addItem(groupName);
+		}
+		
+		
 		//initializeTable();
     	int rowCount = model.getRowCount();
     	for (int i = rowCount - 1; i >= 0; i--) {

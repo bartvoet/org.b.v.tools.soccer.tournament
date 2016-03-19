@@ -54,7 +54,7 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
         JMenuItem addGroups = new JMenuItem("Groepen maken");
         addGroups.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				groupDialog.clear();
+				groupDialog.prepareCleanScreen();
 				groupDialog.setVisible(true);
 			}
 		});
