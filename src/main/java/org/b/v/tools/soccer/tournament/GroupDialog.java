@@ -62,9 +62,9 @@ public class GroupDialog extends JDialog {
 
 	private void initializeTable() {
 		String[] columnNames = {"Teamnaam",""};
-        Object[][] data = {{"Baal",null}};
+        //Object[][] data = {{"Baal",null}};
 
-        model=new DefaultTableModel(data, columnNames){
+        model=new DefaultTableModel(columnNames,0){
             	Class[] types = new Class [] {
                     java.lang.String.class, java.lang.Boolean.class
                 };
@@ -143,5 +143,14 @@ public class GroupDialog extends JDialog {
 				GroupDialog.this.setVisible(false);
 			}
 		});
+	}
+
+
+	public void clear() {
+		//initializeTable();
+    	int rowCount = model.getRowCount();
+    	for (int i = rowCount - 1; i >= 0; i--) {
+    		model.removeRow(i);
+    	}
 	}
 }
