@@ -2,8 +2,6 @@ package org.b.v.tools.soccer.tournament;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GraphicsEnvironment;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -13,7 +11,6 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -31,17 +28,23 @@ public class GroupDialog extends JDialog {
 	private JButton saveAndExitButton;
 	private JButton cancelButton;
 	
+	private List<Integer> ids;
+	
 	private JTable table;
+
+	private GamesRepository gamesRepository;
+
+	private UpdateEvent event;
 	
-	
-	public GroupDialog() {
-        setLayout(new BorderLayout());
+	public GroupDialog(GamesRepository gamesRepository,UpdateEvent event) {
+        this.gamesRepository = gamesRepository;
+        this.event=event;
+		setLayout(new BorderLayout());
         initializeGeneralInfo();
         initializeTable();
         initializeButtonPanel();
         initializeButtonActions();
         setSize(new Dimension(600,300));
-
 	}
 
 
@@ -113,6 +116,31 @@ public class GroupDialog extends JDialog {
 				for(int i : toDelete) {
 					model.removeRow(i);
 				}
+				
+				for(int row = 0;row < model.getRowCount();row++) {
+					String b = (String)model.getValueAt(row, 0);
+					System.out.println("Remaining at " + row + " " + b);
+				}
+			}
+		});
+		
+		cancelButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				GroupDialog.this.setVisible(false);
+			}
+		});
+		
+		saveAndExitButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String groupName = name.getText();
+				gamesRepository.createOrUpdateGroup(name.getText());
+				for(int row = 0;row < model.getRowCount();row++) {
+					String teamName = (String)model.getValueAt(row, 0);
+					gamesRepository.addTeamToGroup(groupName,teamName);
+				}
+				event.update();
+				GroupDialog.this.setVisible(false);
 			}
 		});
 	}

@@ -4,31 +4,28 @@ package org.b.v.tools.soccer.tournament;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-//stap 1: data updaten 
-
-//TODO: menu tournament - team -game
-
 public class TournamentPanel extends JPanel {
 
 	private static final long serialVersionUID = 5699773301406172716L;
+
 	public DefaultTableModel model;
+	private DefaultTableModel groupModel;
 	
     public TournamentPanel() {
-        //super(new GridLayout(1,0));
     	super(new BorderLayout());
     	GridBagConstraints c = new GridBagConstraints();
     	c.fill = GridBagConstraints.HORIZONTAL;
     	
     	
-        String[] columnNames = {"Team","Team","Groep","Veld","Tijdstip"};
+        String[] columnNames = {"Thuis","Uit","Groep","Veld","Tijdstip"};
         Object[][] data = {};
         model=new DefaultTableModel(data, columnNames);
         
@@ -39,9 +36,9 @@ public class TournamentPanel extends JPanel {
         
         
         String[] groupColumnNames = {"Groep","Team","Punten"};
-        Object[][] groupEata = {{"U17","Baal","10"}};
+        Object[][] groupEata = {};//{{"U17","Baal","10"}};
         
-        DefaultTableModel groupModel=new DefaultTableModel(groupEata, groupColumnNames);
+        groupModel=new DefaultTableModel(groupEata, groupColumnNames);
         final JTable groupTable = new JTable(groupModel);   
         groupTable.setPreferredScrollableViewportSize(new Dimension(500, 200));
         groupTable.setFillsViewportHeight(true);
@@ -49,6 +46,21 @@ public class TournamentPanel extends JPanel {
         
         add(scrollPane,BorderLayout.CENTER);
         add(datascrollPane,BorderLayout.EAST);
+    }
+    
+    public void refreshGroups(Map<String,List<String>> teamsPerGroup){
+    	
+    	int rowCount = groupModel.getRowCount();
+    	for (int i = rowCount - 1; i >= 0; i--) {
+    		groupModel.removeRow(i);
+    	}
+    	
+    	for(String group :teamsPerGroup.keySet()) {
+    		List<String> teams = teamsPerGroup.get(group);
+    		for(String team : teams) {
+    			groupModel.addRow(new Object[]{group,team,""});
+    		}
+    	}
     }
  
 }

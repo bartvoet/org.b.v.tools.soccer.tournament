@@ -14,14 +14,17 @@ import javax.swing.JMenuItem;
 
 //TODO: menu tournament - team -game
 
-public class TournamentApplication extends JFrame {
+public class TournamentApplication extends JFrame implements UpdateEvent {
 
 	private static final long serialVersionUID = -2747948660004275050L;
 
 	private final TournamentPanel newContentPane = new TournamentPanel();
-	private final GroupDialog groupDialog=new GroupDialog();
-	private final TeamDialog teamDialog=new TeamDialog();
+	private final GamesRepository gamesRepository = new GamesRepository();
+	private final GroupDialog groupDialog=new GroupDialog(gamesRepository,this);
+	private final TeamDialog teamDialog = new TeamDialog();
 	
+	
+
 	
 	public TournamentApplication() {
 		super("Tornooi");
@@ -48,7 +51,7 @@ public class TournamentApplication extends JFrame {
 		JMenu menu = new JMenu("Acties");
         menu.setMnemonic(KeyEvent.VK_A);
  
-        JMenuItem addGroups = new JMenuItem("Groepen beheren");
+        JMenuItem addGroups = new JMenuItem("Groepen maken");
         addGroups.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				groupDialog.setVisible(true);
@@ -93,6 +96,10 @@ public class TournamentApplication extends JFrame {
         	frame.newContentPane.model.addRow(row);
         }
     }
+
+	public void update() {
+		this.newContentPane.refreshGroups(gamesRepository.getAll());
+	}
     
     //aanmaken van groep
     //aanmaken van matchen na creatie van group
