@@ -12,6 +12,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import org.b.v.tools.soccer.tournament.model.GroupMember;
+
 public class TournamentPanel extends JPanel {
 
 	private static final long serialVersionUID = 5699773301406172716L;
@@ -48,7 +50,7 @@ public class TournamentPanel extends JPanel {
         add(datascrollPane,BorderLayout.EAST);
     }
     
-    public void refreshGroups(Map<String,List<String>> teamsPerGroup){
+    public void refreshGroups(Map<String,List<GroupMember>> teamsPerGroup){
     	
     	int rowCount = groupModel.getRowCount();
     	for (int i = rowCount - 1; i >= 0; i--) {
@@ -56,9 +58,9 @@ public class TournamentPanel extends JPanel {
     	}
     	
     	for(String group :teamsPerGroup.keySet()) {
-    		List<String> teams = teamsPerGroup.get(group);
-    		for(String team : teams) {
-    			groupModel.addRow(new Object[]{group,team,""});
+    		List<GroupMember> teams = teamsPerGroup.get(group);
+    		for(GroupMember team : teams) {
+    			groupModel.addRow(new Object[]{group,team.getTeamName(),""});
     		}
     	}
     }

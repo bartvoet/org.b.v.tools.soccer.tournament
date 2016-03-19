@@ -8,10 +8,11 @@ import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.b.v.tools.soccer.tournament.model.Game;
+import org.b.v.tools.soccer.tournament.model.GroupMember;
 
 public class GamesRepository {
 	
-	private Map<String,List<String>> teamsPerGroup = new TreeMap<String,List<String>>(); 
+	private Map<String,List<GroupMember>> teamsPerGroup = new TreeMap<String,List<GroupMember>>(); 
 	private AtomicLong groupIds = new AtomicLong();
 	
 	
@@ -21,19 +22,19 @@ public class GamesRepository {
 
 	public void createOrUpdateGroup(String text) {
 		if(!teamsPerGroup.containsKey(text)) {
-			teamsPerGroup.put(text, new ArrayList<String>());
+			teamsPerGroup.put(text, new ArrayList<GroupMember>());
 		}
 	}
 
 	public void addTeamToGroup(String group,String name) {
-		List<String> teams = teamsPerGroup.get(group);
+		List<GroupMember> teams = teamsPerGroup.get(group);
 		if(!teams.contains(name)) {	
-			teams.add(name);
+			teams.add(new GroupMember(name));
 		}
 		
 	}
 	
-	public Map<String,List<String>> getAll(){
+	public Map<String,List<GroupMember>> getAll(){
 		return this.teamsPerGroup;
 	}
 	
@@ -41,7 +42,7 @@ public class GamesRepository {
 		return teamsPerGroup.keySet();
 	}
 
-	public List<String> getTeamsForAGroup(String team) {
+	public List<GroupMember> getTeamsForAGroup(String team) {
 		return teamsPerGroup.get(team);
 	}
 }
