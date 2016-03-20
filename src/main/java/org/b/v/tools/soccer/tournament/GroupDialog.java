@@ -18,6 +18,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import org.b.v.tools.soccer.tournament.model.GroupMember;
+
 public class GroupDialog extends JDialog {
 
 	private static final long serialVersionUID = -7208676901332235553L;
@@ -147,18 +149,42 @@ public class GroupDialog extends JDialog {
 				GroupDialog.this.setVisible(false);
 			}
 		});
+		
+		
+		combo.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				String name = (String) combo.getSelectedItem();
+				if(name!=null & !"-".equals(name)) {
+					System.out.println(name);
+					//load group here
+					
+					GroupDialog.this.name.setText(name);
+					
+			    	int rowCount = model.getRowCount();
+			    	for (int i = rowCount - 1; i >= 0; i--) {
+			    		model.removeRow(i);
+			    	}
+
+			    	for(GroupMember member : gamesRepository.getTeamsForAGroup(name)) {
+			    		model.addRow(new Object[]{member.getTeamName(),null});
+			    	}
+			    	
+				}
+			}
+		});
 	}
 
 
 	public void prepareCleanScreen() {
 		name.setText("");
 		
+		combo.removeAllItems();
+		
+		combo.addItem("-");
 		for(String groupName : gamesRepository.getAllGroups()) {
 			combo.addItem(groupName);
 		}
 		
-		
-		//initializeTable();
     	int rowCount = model.getRowCount();
     	for (int i = rowCount - 1; i >= 0; i--) {
     		model.removeRow(i);
