@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -13,13 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 
-import org.b.v.tools.soccer.tournament.extra.EntityFilter;
-import org.b.v.tools.soccer.tournament.extra.EntityMapper;
-import org.b.v.tools.soccer.tournament.extra.EntityTableModel;
 import org.b.v.tools.soccer.tournament.model.Group;
-import org.b.v.tools.soccer.tournament.model.GroupMember;
 
 public class GameCreationDialog extends JDialog {
 
@@ -43,12 +37,19 @@ public class GameCreationDialog extends JDialog {
         this.event=event;
 		setLayout(new BorderLayout());
         initializeTable();
+        initializeGeneralInfo();
         initializeButtonPanel();
         initializeButtonActions();
+        prepareCleanScreen();
         setSize(new Dimension(600,300));
 	}
 
-
+	private void initializeGeneralInfo() {
+		JPanel infoPanel = new JPanel();
+        infoPanel.add(new JLabel("Naam groep"));
+        infoPanel.add(combo);
+        add(infoPanel,BorderLayout.NORTH);
+	}
 		
 	
 	private void initializeTable() {

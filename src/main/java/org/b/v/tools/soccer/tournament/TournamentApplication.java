@@ -21,6 +21,7 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 	private final TournamentPanel newContentPane = new TournamentPanel();
 	private final GroupRepository gamesRepository = new GroupRepository();
 	private final GroupDialog groupDialog=new GroupDialog(gamesRepository,this);
+	private final GameCreationDialog gameDialog=new GameCreationDialog(gamesRepository,this);
 	private final TeamDialog teamDialog = new TeamDialog();
 		
 	public TournamentApplication() {
@@ -56,10 +57,11 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 			}
 		});
         
-        JMenuItem addTerrain = new JMenuItem("Velden beheren");
+        JMenuItem addTerrain = new JMenuItem("Wedstrijden beheren");
         addTerrain.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				gameDialog.prepareCleanScreen();
+				gameDialog.setVisible(true);
 			}
 		});
         
