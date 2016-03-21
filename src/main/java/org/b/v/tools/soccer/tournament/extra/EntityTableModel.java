@@ -18,6 +18,8 @@ public class EntityTableModel<T extends Entity>  {
 	
 	private List<EntityTracker> loadedEntities=new ArrayList<EntityTracker>();
 	private EntityFilter<T> filter;
+	private List<T> entitiesToBeRemoved = new ArrayList<T>();
+	
 	
 	private class EntityTracker {
 		private int row;
@@ -128,7 +130,6 @@ public class EntityTableModel<T extends Entity>  {
 				actual[i] = row[i];
 			}
 			actual[row.length]=entity.getId();
-			System.out.println("Row: " + row.length + " " +  entity.getId());
 			model.addRow(actual);
 		}
 	}
@@ -138,10 +139,13 @@ public class EntityTableModel<T extends Entity>  {
 		
 		for(int row = 0;row < model.getRowCount();row++) {
 			Object[] data = getRowData(row);
-			System.out.println(data.length);
 			if(data[data.length-1]==null) {
 				filter.saveNewEntity(mapper.map(data));
 			}
+		}
+		
+		for(T toBeDeleted : entitiesToBeRemoved) {
+			filter.removeExistingEntity(toBeDeleted);
 		}
 	}
 
@@ -149,9 +153,9 @@ public class EntityTableModel<T extends Entity>  {
 		return this.model;
 	}
 
-	private void removeEntityFromTable(int i) {
-		model.removeRow(i);
-	}
+//	public void removeEntityFromTable(int i) {
+//		model.removeRow(i);
+//	}
 
 	public void addEmptyEntityFromTable() {
 		model.addRow(mapper.getDefaultData());
@@ -172,7 +176,14 @@ public class EntityTableModel<T extends Entity>  {
 			if(b!=null && b.booleanValue()) {toDelete.add(row);}
 		}
 		for(int i : toDelete) {
-			removeEntityFromTable(i);
+			Object[] data = getRowData(i);
+			if(data[data.length-1]!=null) {
+				T entity = mapper.map(data);
+				entity.setId((Long)data[data.length-1]);
+				entitiesToBeRemoved.add(entity);
+			}
+			
+			model.removeRow(i);
 		}
 		
 //		for(int row = 0;row < model.getRowCount();row++) {

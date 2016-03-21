@@ -56,6 +56,7 @@ public class Group extends Entity  {
 	}
 
 	public void removeMember(GroupMember entity) {
+		System.out.println("removing");
 		this.members.remove(entity);
 	}
 
