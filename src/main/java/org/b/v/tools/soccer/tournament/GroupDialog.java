@@ -84,6 +84,10 @@ public class GroupDialog extends JDialog {
 			public void removeExistingEntity(GroupMember entity) {
 				groupCurrentlyProcessing.removeMember(entity);		
 			}
+
+			public void updateEntity(GroupMember entity) {
+				groupCurrentlyProcessing.updateMember(entity);
+			}
 		};
 	
 	private EntityMapper<GroupMember> groupMemberMapper =
@@ -147,8 +151,8 @@ public class GroupDialog extends JDialog {
         
         addButton = new JButton("Toevoegen");
         deleteButton = new JButton("Verwijderen");
-        cancelButton = new JButton("Sluiten");
-        saveAndExitButton = new JButton("Save en sluiten");
+        cancelButton = new JButton("Cancel");
+        saveAndExitButton = new JButton("OK");
         
         buttonPanel.add(addButton);
         buttonPanel.add(deleteButton);

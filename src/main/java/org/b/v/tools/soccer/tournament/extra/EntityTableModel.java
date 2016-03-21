@@ -103,6 +103,11 @@ public class EntityTableModel<T extends Entity>  {
 			public void removeExistingEntity(T e) {
 				
 			}
+
+			public void updateEntity(T t) {
+				// TODO Auto-generated method stub
+				
+			}
         };
 	}
 
@@ -141,6 +146,11 @@ public class EntityTableModel<T extends Entity>  {
 			Object[] data = getRowData(row);
 			if(data[data.length-1]==null) {
 				filter.saveNewEntity(mapper.map(data));
+			} else {
+				
+				T t = mapper.map(data);
+				t.setId((Long)data[data.length-1]);
+				filter.updateEntity(t);
 			}
 		}
 		

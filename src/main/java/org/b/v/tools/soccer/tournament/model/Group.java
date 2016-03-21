@@ -10,6 +10,7 @@ public class Group extends Entity  {
 	private String name;
 	private long id;
 	private List<GroupMember> members = new ArrayList<GroupMember>();
+	private List<Game> games=new ArrayList<Game>();
 
 	public Group(String name) {
 		this.name = name;
@@ -56,12 +57,23 @@ public class Group extends Entity  {
 	}
 
 	public void removeMember(GroupMember entity) {
-		System.out.println("removing");
 		this.members.remove(entity);
 	}
 
 	public void updateMember(GroupMember entity) {
+		boolean found=false;
+		int position=0;
+		for(GroupMember corresponding:this.members) {
+			if(corresponding.equals(entity)) {
+				found=true;
+				break;
+			}
+			position++;
+		}
 		
+		if(found) {
+			this.members.set(position, entity);
+		}
 	}
 
 
