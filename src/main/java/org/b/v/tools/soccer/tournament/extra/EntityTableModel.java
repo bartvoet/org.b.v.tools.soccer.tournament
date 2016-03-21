@@ -2,31 +2,30 @@ package org.b.v.tools.soccer.tournament.extra;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 
 //extends or composite???
 //keep track of rows
 //when you save verify the rows that you don't track
 
-public class EntityTableModel<T>  {
+public class EntityTableModel<T extends Entity>  {
 	
 	private DefaultTableModel model;
 	private EntityMapper<T> mapper;
 	
 	private List<EntityTracker> loadedEntities=new ArrayList<EntityTracker>();
+	private EntityFilter<T> filter;
 	
 	private class EntityTracker {
 		private int row;
-		private Comparable<T> id;
+		private Comparable<?> id;
 		private boolean isNew=false;
 		private boolean toBeDeleted=false;
 		
-		public EntityTracker(int row, Comparable<T> id, boolean isNew) {
+		public EntityTracker(int row, Comparable<?> id, boolean isNew) {
 			super();
 			this.row = row;
 			this.id = id;
@@ -34,7 +33,7 @@ public class EntityTableModel<T>  {
 		}
 		
 		public EntityTracker(int row) {
-			// TODO Auto-generated constructor stub
+			this.row=row;
 		}
 
 		public void markAsDeleted() {
@@ -65,21 +64,48 @@ public class EntityTableModel<T>  {
 		return null;
 	}
 	
-	public EntityTableModel(final EntityMapper<T> mapper,DefaultTableModel model) {
+	private String[] enrichedColumnNames() {
+		String[] columnNames = mapper.getColumnNames();
+		String[] enriched = new String[columnNames.length + 1];
+		
+		for(int i=0;i<columnNames.length;i++) {
+			enriched[i]=columnNames[i];
+		}
+		
+		return enriched;
+	}
+	
+	public EntityTableModel(final EntityMapper<T> mapper) {
 		this.mapper = mapper;
-		this.model=model;
-		this.model.addTableModelListener(new TableModelListener() {
-			public void tableChanged(TableModelEvent e) {
-				switch(e.getType()) {
-					case(TableModelEvent.INSERT):
-						loadedEntities.add(newEntityTracker(e.getFirstRow()));
-						break;
-					case(TableModelEvent.DELETE):
-						searchActive(e.getFirstRow()).markAsDeleted();
-						break;
-				}
+		
+		this.model=new DefaultTableModel(enrichedColumnNames(),0){
+                public Class getColumnClass(int columnIndex) {
+                    if(mapper.getColumnNames().length == columnIndex) {
+                    	return Long.class;
+                    }
+                	
+                	return mapper.getType(columnIndex);
+                }
+            };
+        
+        this.filter=new EntityFilter<T>() {
+
+			public List<T> getEntities() {
+				return new ArrayList<T>();
 			}
-		});
+
+			public void saveNewEntity(T entity) {
+				
+			}
+
+			public void removeExistingEntity(T e) {
+				
+			}
+        };
+	}
+
+	public void changeEntityFilter(EntityFilter<T> filter) {
+		this.filter=filter;
 	}
 	
 	public Class<?> getColumnClass(int columnIndex) {
@@ -87,14 +113,87 @@ public class EntityTableModel<T>  {
 	}
 	
 	public void load(EntityFilter<T> repository ) {
-		List<T> storedEntities = repository.getEntities();
-		//loadedEntities = repository.getEntities();
-		int rowCounter = 0;
+		this.filter=repository;
+		
+    	int rowCount = model.getRowCount();
+    	for (int i = rowCount - 1; i >= 0; i--) {
+    		model.removeRow(i);
+    	}
+		
+		List<T> storedEntities = this.filter.getEntities();
 		for(T entity:storedEntities) {
 			Object row[] = mapper.map(entity);
-			model.addRow(row);
-			loadedEntities.add(existingEntityTracker(rowCounter++,entity));
+			Object actual[] = new Object[row.length + 1];
+			for(int i=0;i<row.length;i++) {
+				actual[i] = row[i];
+			}
+			actual[row.length]=entity.getId();
+			System.out.println("Row: " + row.length + " " +  entity.getId());
+			model.addRow(actual);
 		}
+	}
+	
+	public void dump(EntityFilter<T> repository ) {
+		this.filter=repository;
+		
+		for(int row = 0;row < model.getRowCount();row++) {
+			Object[] data = getRowData(row);
+			System.out.println(data.length);
+			if(data[data.length-1]==null) {
+				filter.saveNewEntity(mapper.map(data));
+			}
+		}
+	}
+
+	public DefaultTableModel getTable() {
+		return this.model;
+	}
+
+	private void removeEntityFromTable(int i) {
+		model.removeRow(i);
+	}
+
+	public void addEmptyEntityFromTable() {
+		model.addRow(mapper.getDefaultData());
+	}
+	
+	Object[] getRowData(int row) {
+		Object[] data=new Object[model.getColumnCount()];
+		for(int i=0;i< model.getColumnCount();i++) {
+			data[i]=model.getValueAt(row, i);
+		}
+		return data;
+	}
+
+	public void removeRows() {
+		List<Integer> toDelete = new ArrayList<Integer>();
+		for(int row = 0;row < model.getRowCount();row++) {
+			Boolean b = mapper.isMarkedToBeDeleted(getRowData(row));
+			if(b!=null && b.booleanValue()) {toDelete.add(row);}
+		}
+		for(int i : toDelete) {
+			removeEntityFromTable(i);
+		}
+		
+//		for(int row = 0;row < model.getRowCount();row++) {
+//			String b = (String)model.getValueAt(row, 0);
+//			System.out.println("Remaining at " + row + " " + b);
+//		}
+		
+	}
+
+	public void clean() {
+		int rowCount = model.getRowCount();
+    	for (int i = rowCount - 1; i >= 0; i--) {
+    		model.removeRow(i);
+    	}
+		
+	}
+
+	public void configureTable(JTable table) {
+		table.setModel(model);
+		TableColumnModel tcm = table.getColumnModel();
+		tcm.removeColumn( tcm.getColumn(tcm.getColumnCount()-1));
 	}
 	
 	

@@ -19,7 +19,7 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 	private static final long serialVersionUID = -2747948660004275050L;
 
 	private final TournamentPanel newContentPane = new TournamentPanel();
-	private final GamesRepository gamesRepository = new GamesRepository();
+	private final GroupRepository gamesRepository = new GroupRepository();
 	private final GroupDialog groupDialog=new GroupDialog(gamesRepository,this);
 	private final TeamDialog teamDialog = new TeamDialog();
 	
@@ -99,7 +99,7 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
     }
 
 	public void update() {
-		this.newContentPane.refreshGroups(gamesRepository.getAll());
+		this.newContentPane.refreshGroups(gamesRepository.getAllGroups());
 	}
     
     //aanmaken van groep

@@ -1,5 +1,30 @@
 package org.b.v.tools.soccer.tournament.extra;
 
-public class Entity {
+public abstract class Entity implements Comparable<Entity> {
+	private Long id;
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	public int compareTo(Entity o) {
+		return new Long(id).compareTo(new Long(o.id));
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Entity) {
+			Entity otherGroup = (Entity)obj;
+			return this.id==otherGroup.id;
+		}
+		return false;
+	}
+	
+	public boolean containsId() {
+		return !(id==null);
+	}
 }

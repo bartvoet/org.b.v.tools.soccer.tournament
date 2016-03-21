@@ -4,9 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -16,15 +14,17 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
 
+import org.b.v.tools.soccer.tournament.extra.EntityFilter;
+import org.b.v.tools.soccer.tournament.extra.EntityMapper;
+import org.b.v.tools.soccer.tournament.extra.EntityTableModel;
+import org.b.v.tools.soccer.tournament.model.Group;
 import org.b.v.tools.soccer.tournament.model.GroupMember;
 
 public class GroupDialog extends JDialog {
 
 	private static final long serialVersionUID = -7208676901332235553L;
 	
-	private DefaultTableModel model;
 	private JTextField name = new JTextField();
 	private JComboBox<String> combo = new JComboBox<String>();
 
@@ -33,15 +33,18 @@ public class GroupDialog extends JDialog {
 	private JButton saveAndExitButton;
 	private JButton cancelButton;
 	
-	private List<Integer> ids;
-	
 	private JTable table;
 
-	private GamesRepository gamesRepository;
+	private GroupRepository gamesRepository;
 
 	private UpdateEvent event;
 	
-	public GroupDialog(GamesRepository gamesRepository,UpdateEvent event) {
+	private Group groupCurrentlyProcessing=new Group("");
+	
+	private EntityTableModel<GroupMember> data;
+	
+	
+	public GroupDialog(GroupRepository gamesRepository,UpdateEvent event) {
         this.gamesRepository = gamesRepository;
         this.event=event;
 		setLayout(new BorderLayout());
@@ -65,22 +68,72 @@ public class GroupDialog extends JDialog {
         add(infoPanel,BorderLayout.NORTH);
 	}
 
+	private EntityFilter<GroupMember> filter =
+		new EntityFilter<GroupMember>() {
+			public List<GroupMember> getEntities() {
+				return groupCurrentlyProcessing.getMembers();
+			}
+	
+			public void saveNewEntity(GroupMember entity) {
+				if(!entity.containsId()) {
+					gamesRepository.enrichWithId(entity);
+				}
+				groupCurrentlyProcessing.addNewMember(entity);				
+			}
+	
+			public void removeExistingEntity(GroupMember entity) {
+				groupCurrentlyProcessing.removeMember(entity);		
+			}
+		};
+	
+	private EntityMapper<GroupMember> groupMemberMapper =
+		new EntityMapper<GroupMember>() {
+			final String[] columnNames = {"Teamnaam",""};
+			@SuppressWarnings("rawtypes")
+			final Class[] types = new Class [] {java.lang.String.class, java.lang.Boolean.class};
+			
+			public String[] getColumnNames() {
+				return columnNames;
+			}
 
+			public Class<?> getType(int columnIndex) {
+				return types [columnIndex];
+			}
+
+			public Object[] map(GroupMember entity) {
+				return new Object[]{entity.getTeamName(),null};
+			}
+			
+			public GroupMember map(Object[] data) {
+				return new GroupMember((String)data[0]);
+			}
+
+			public Comparable<?> getId(GroupMember entity) {
+				return new Long(entity.getId());
+			}
+			
+			public Object[] getDefaultData() {
+				return new Object[]{"",null};
+			}
+			
+			public boolean isMarkedToBeDeleted(Object[] data) {
+				Object bool = data[1];
+				if(bool!=null) {
+					return (Boolean)data[1];
+				}
+				return false;
+			}
+		};	
+		
+	
 	private void initializeTable() {
-		String[] columnNames = {"Teamnaam",""};
-        //Object[][] data = {{"Baal",null}};
-
-        model=new DefaultTableModel(columnNames,0){
-            	Class[] types = new Class [] {
-                    java.lang.String.class, java.lang.Boolean.class
-                };
-     
-                public Class getColumnClass(int columnIndex) {
-                    return types [columnIndex];
-                }
-            };
-            
-        table = new JTable(model);
+ 		
+		data = new EntityTableModel<GroupMember>(groupMemberMapper);
+		
+        table = new JTable();
+        data.configureTable(table);
+        data.load(filter);
+        
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane,BorderLayout.CENTER);
 
@@ -108,86 +161,56 @@ public class GroupDialog extends JDialog {
 	private void initializeButtonActions() {
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				model.addRow(new Object[]{"",null});
+				data.addEmptyEntityFromTable();
+				
 			}
 		});
 		
 		deleteButton.addActionListener(new ActionListener() {
-			List<Integer> toDelete = new ArrayList<Integer>();
 			public void actionPerformed(ActionEvent e) {
-				for(int row = 0;row < model.getRowCount();row++) {
-					Boolean b = (Boolean)model.getValueAt(row, 1);
-					if(b!=null && b.booleanValue()) {toDelete.add(row);}
-				}
-				for(int i : toDelete) {
-					model.removeRow(i);
-				}
-				
-				for(int row = 0;row < model.getRowCount();row++) {
-					String b = (String)model.getValueAt(row, 0);
-					System.out.println("Remaining at " + row + " " + b);
-				}
+				data.removeRows();
 			}
 		});
 		
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
 				GroupDialog.this.setVisible(false);
 			}
 		});
 		
 		saveAndExitButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String groupName = name.getText();
-				gamesRepository.createOrUpdateGroup(name.getText());
-				for(int row = 0;row < model.getRowCount();row++) {
-					String teamName = (String)model.getValueAt(row, 0);
-					gamesRepository.addTeamToGroup(groupName,teamName);
-				}
+				groupCurrentlyProcessing.changeName(name.getText());
+				gamesRepository.createOrSaveGroup(groupCurrentlyProcessing);
+				data.dump(filter);
+				
 				event.update();
 				GroupDialog.this.setVisible(false);
 			}
 		});
 		
-		
 		combo.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				String name = (String) combo.getSelectedItem();
 				if(name!=null & !"-".equals(name)) {
-					System.out.println(name);
-					//load group here
-					
 					GroupDialog.this.name.setText(name);
-					
-			    	int rowCount = model.getRowCount();
-			    	for (int i = rowCount - 1; i >= 0; i--) {
-			    		model.removeRow(i);
-			    	}
-
-			    	for(GroupMember member : gamesRepository.getTeamsForAGroup(name)) {
-			    		model.addRow(new Object[]{member.getTeamName(),null});
-			    	}
-			    	
+					groupCurrentlyProcessing = gamesRepository.searchGroupByName(name);
+			    	data.load(filter);
 				}
 			}
 		});
 	}
 
-
 	public void prepareCleanScreen() {
 		name.setText("");
+		groupCurrentlyProcessing=new Group("");
 		
 		combo.removeAllItems();
-		
 		combo.addItem("-");
-		for(String groupName : gamesRepository.getAllGroups()) {
-			combo.addItem(groupName);
+		for(Group group : gamesRepository.getAllGroups()) {
+			combo.addItem(group.getName());
 		}
 		
-    	int rowCount = model.getRowCount();
-    	for (int i = rowCount - 1; i >= 0; i--) {
-    		model.removeRow(i);
-    	}
+		data.clean();
 	}
 }

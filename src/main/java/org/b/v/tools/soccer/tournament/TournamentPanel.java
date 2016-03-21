@@ -4,6 +4,7 @@ package org.b.v.tools.soccer.tournament;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import org.b.v.tools.soccer.tournament.model.Group;
 import org.b.v.tools.soccer.tournament.model.GroupMember;
 
 public class TournamentPanel extends JPanel {
@@ -50,17 +52,17 @@ public class TournamentPanel extends JPanel {
         add(datascrollPane,BorderLayout.EAST);
     }
     
-    public void refreshGroups(Map<String,List<GroupMember>> teamsPerGroup){
+    public void refreshGroups(Collection<Group> teamsPerGroup){
     	
     	int rowCount = groupModel.getRowCount();
     	for (int i = rowCount - 1; i >= 0; i--) {
     		groupModel.removeRow(i);
     	}
     	
-    	for(String group :teamsPerGroup.keySet()) {
-    		List<GroupMember> teams = teamsPerGroup.get(group);
+    	for(Group group :teamsPerGroup) {
+    		List<GroupMember> teams = group.getMembers();
     		for(GroupMember team : teams) {
-    			groupModel.addRow(new Object[]{group,team.getTeamName(),""});
+    			groupModel.addRow(new Object[]{group.getName(),team.getTeamName(),""});
     		}
     	}
     }

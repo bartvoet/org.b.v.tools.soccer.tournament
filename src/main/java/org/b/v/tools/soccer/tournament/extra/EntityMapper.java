@@ -1,5 +1,6 @@
 package org.b.v.tools.soccer.tournament.extra;
 
+
 public interface EntityMapper<T> {
 
 	String[] getColumnNames();
@@ -7,7 +8,13 @@ public interface EntityMapper<T> {
 	Class<?> getType(int columnIndex);
 
 	Object[] map(T entity);
+	
+	T map(Object[] data);
 
-	Comparable<T> getId(T entity);
+	Comparable<?> getId(T entity);
+
+	Object[] getDefaultData();
+	
+	public boolean isMarkedToBeDeleted(Object[] data);
 
 }
