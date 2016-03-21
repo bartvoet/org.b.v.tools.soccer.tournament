@@ -22,10 +22,7 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 	private final GroupRepository gamesRepository = new GroupRepository();
 	private final GroupDialog groupDialog=new GroupDialog(gamesRepository,this);
 	private final TeamDialog teamDialog = new TeamDialog();
-	
-	
-
-	
+		
 	public TournamentApplication() {
 		super("Tornooi");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -51,7 +48,7 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 		JMenu menu = new JMenu("Acties");
         menu.setMnemonic(KeyEvent.VK_A);
  
-        JMenuItem addGroups = new JMenuItem("Groepen maken");
+        JMenuItem addGroups = new JMenuItem("Groepen beheren");
         addGroups.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				groupDialog.prepareCleanScreen();
