@@ -17,7 +17,6 @@ import javax.swing.table.DefaultTableModel;
 
 import org.b.v.tools.soccer.tournament.model.Game;
 import org.b.v.tools.soccer.tournament.model.Group;
-import org.b.v.tools.soccer.tournament.model.GroupMember;
 import org.b.v.tools.soccer.tournament.model.Ranking;
 
 public class TournamentPanel extends JPanel {
@@ -93,13 +92,6 @@ public class TournamentPanel extends JPanel {
     	for(Group group :allGroups) {
     		Collection<Game> teams = group.getGames();
     		for(Game team : teams) {
-//    			gameModel.addRow(new Object[]{team.getHome().getTeamName(),
-//    									  team.getOther().getTeamName(),
-//    									  group.getName(),
-//    									  team.getField(),
-//    									  team.getTimeAsString(),
-//    									  team.getHomeScore() + " - " + team.getOutScore(),
-//    									  team.isFinished()?"ja":"nee"});
     			allMatches.add(new Combination(group,team));
     		}
     	}
