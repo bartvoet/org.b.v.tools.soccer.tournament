@@ -42,6 +42,7 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
         setJMenuBar(menuBar);
 		initializeTheFileMenu(menuBar);
 		initializeTheAdminstrationMenu(menuBar);
+		initializeTheHelpMenu(menuBar);
 	}
 
 	private void initializeTheAdminstrationMenu(JMenuBar menuBar) {
@@ -76,6 +77,25 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
         menu.add(new JMenuItem("Save"));
         menuBar.add(menu);
 	}
+	
+	private void initializeTheHelpMenu(JMenuBar menuBar) {
+		JMenu menu = new JMenu("Help");
+        menu.setMnemonic(KeyEvent.VK_H);
+        
+        JMenuItem todo = new JMenuItem("Todo");
+        todo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+        menu.add(todo);
+        
+        
+        menu.add(new JMenuItem("Info"));
+        menuBar.add(menu);
+	}
+	
+	
 	private static TournamentApplication frame;
     
 	public static void main(String[] args) {
