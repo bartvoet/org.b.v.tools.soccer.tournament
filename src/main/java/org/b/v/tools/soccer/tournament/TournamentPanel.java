@@ -19,7 +19,7 @@ public class TournamentPanel extends JPanel {
 
 	private static final long serialVersionUID = 5699773301406172716L;
 
-	public DefaultTableModel model;
+	private DefaultTableModel gameModel;
 	private DefaultTableModel groupModel;
 	
     public TournamentPanel() {
@@ -30,9 +30,9 @@ public class TournamentPanel extends JPanel {
     	
         String[] columnNames = {"Thuis","Uit","Groep","Veld","Tijdstip","Score"};
         Object[][] data = {};
-        model=new DefaultTableModel(data, columnNames);
+        gameModel=new DefaultTableModel(data, columnNames);
         
-        final JTable table = new JTable(model);
+        final JTable table = new JTable(gameModel);
         table.setPreferredScrollableViewportSize(new Dimension(500, 200));
         table.setFillsViewportHeight(true);
         JScrollPane scrollPane = new JScrollPane(table);
@@ -67,15 +67,15 @@ public class TournamentPanel extends JPanel {
     }
 
 	public void refreshGames(Collection<Group> allGroups) {
-	   	int rowCount = model.getRowCount();
+	   	int rowCount = gameModel.getRowCount();
     	for (int i = rowCount - 1; i >= 0; i--) {
-    		model.removeRow(i);
+    		gameModel.removeRow(i);
     	}
     	
     	for(Group group :allGroups) {
     		Collection<Game> teams = group.getGames();
     		for(Game team : teams) {
-    			model.addRow(new Object[]{team.getHome().getTeamName(),
+    			gameModel.addRow(new Object[]{team.getHome().getTeamName(),
     									  team.getOther().getTeamName(),
     									  group.getName(),
     									  team.getHomeScore() + " - " + team.getOutScore()
