@@ -28,7 +28,7 @@ public class TournamentPanel extends JPanel {
     	c.fill = GridBagConstraints.HORIZONTAL;
     	
     	
-        String[] columnNames = {"Thuis","Uit","Groep","Veld","Tijdstip"};
+        String[] columnNames = {"Thuis","Uit","Groep","Veld","Tijdstip","Score"};
         Object[][] data = {};
         model=new DefaultTableModel(data, columnNames);
         
@@ -76,9 +76,10 @@ public class TournamentPanel extends JPanel {
     		Collection<Game> teams = group.getGames();
     		for(Game team : teams) {
     			model.addRow(new Object[]{team.getHome().getTeamName(),
-    									  team.getHome().getTeamName(),
+    									  team.getOther().getTeamName(),
     									  group.getName(),
-    									  "",""});
+    									  team.getHomeScore() + " - " + team.getOutScore()
+    									  ,""});
     		}
     	}
 	}

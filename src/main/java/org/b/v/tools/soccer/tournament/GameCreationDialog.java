@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -66,6 +68,8 @@ public class GameCreationDialog extends JDialog {
 		
 	private Group group;
 	
+	private static Pattern scorePattern = Pattern.compile("\\s*(\\d+)\\s*-\\s*(\\d+)\\s*");
+	
 	private EntityMapper<Game> groupMemberMapper =
 			new EntityMapper<Game>() {
 				final String[] columnNames = {"Thuis","Uit","Score",""};
@@ -87,17 +91,27 @@ public class GameCreationDialog extends JDialog {
 				}
 				
 				public Game map(Object[] data) {
-					return new Game(group.getMemberByName((String)data[0]),group.getMemberByName((String)data[1]))
+					return new Game(group.getMemberByName((String)data[0]),
+									group.getMemberByName((String)data[1]))
 							.withScores(parseFirstScore(data[2]), parseSecondScore(data[2]));
 				}
 				
 				private int parseFirstScore(Object object) {
-					// TODO Auto-generated method stub
+					String score = (String)object;
+					Matcher matcher = scorePattern.matcher(score);
+					if(matcher.matches()) {
+						return Integer.parseInt(matcher.group(1));
+					}
+					
 					return 0;
 				}
 
 				private int parseSecondScore(Object object) {
-					// TODO Auto-generated method stub
+					String score = (String)object;
+					Matcher matcher = scorePattern.matcher(score);
+					if(matcher.matches()) {
+						return Integer.parseInt(matcher.group(2));
+					}
 					return 0;
 				}
 
@@ -222,4 +236,5 @@ public class GameCreationDialog extends JDialog {
 		
 		
 	}
+	
 }
