@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,6 +46,8 @@ public class GameCreationDialog extends JDialog {
 
 	private JButton saveAndExitButon;
 	
+	private JButton removeButton;
+	
 	
 	
 	public GameCreationDialog(GroupRepository gamesRepository,UpdateEvent event) {
@@ -69,12 +72,19 @@ public class GameCreationDialog extends JDialog {
 	private Group group;
 	
 	private static Pattern scorePattern = Pattern.compile("\\s*(\\d+)\\s*-\\s*(\\d+)\\s*");
+	private static Pattern timePattern = Pattern.compile("\\s*(\\d+)\\s*:\\s*(\\d+)\\s*");
 	
 	private EntityMapper<Game> groupMemberMapper =
 			new EntityMapper<Game>() {
-				final String[] columnNames = {"Thuis","Uit","Score",""};
+				final String[] columnNames = {"Thuis","Uit","Score","Veld","Tijdstip",""};
 				@SuppressWarnings("rawtypes")
-				final Class[] types = new Class [] {java.lang.String.class,java.lang.String.class,java.lang.String.class, java.lang.Boolean.class};
+				final Class[] types = new Class [] {
+						java.lang.String.class,
+						java.lang.String.class,
+						java.lang.String.class,
+						java.lang.String.class,
+						java.lang.String.class, 
+						java.lang.Boolean.class};
 				
 				public String[] getColumnNames() {
 					return columnNames;
@@ -87,15 +97,24 @@ public class GameCreationDialog extends JDialog {
 				public Object[] map(Game entity) {
 					return new Object[]{entity.getHome().getTeamName(),
 										entity.getOther().getTeamName(),
-										entity.getHomeScore() + " - " + entity.getOutScore()};
+										entity.getHomeScore() + " - " + entity.getOutScore(),
+										entity.getField(),
+										entity.getTime().toString(),
+										null};
 				}
 				
 				public Game map(Object[] data) {
 					return new Game(group.getMemberByName((String)data[0]),
 									group.getMemberByName((String)data[1]))
-							.withScores(parseFirstScore(data[2]), parseSecondScore(data[2]));
+							.withScores(parseFirstScore(data[2]), parseSecondScore(data[2]))
+							.atField((String)data[3])
+							.onTime(parseTime((String)data[4]));
 				}
 				
+				private Date parseTime(String string) {
+					return new Date();
+				}
+
 				private int parseFirstScore(Object object) {
 					String score = (String)object;
 					Matcher matcher = scorePattern.matcher(score);
@@ -120,13 +139,13 @@ public class GameCreationDialog extends JDialog {
 				}
 				
 				public Object[] getDefaultData() {
-					return new Object[]{"","","0-0",null};
+					return new Object[]{"","","0-0","","",null};
 				}
 				
 				public boolean isMarkedToBeDeleted(Object[] data) {
-					Object bool = data[1];
+					Object bool = data[5];
 					if(bool!=null) {
-						return (Boolean)data[3];
+						return (Boolean)data[5];
 					}
 					return false;
 				}
@@ -156,9 +175,11 @@ public class GameCreationDialog extends JDialog {
         addButton = new JButton("Toevoegen");
         saveAndExitButon = new JButton("OK");
         cancelButton = new JButton("Cancel");
+        removeButton = new JButton("Verwijderen");
         
         buttonPanel.add(generateButton);
         buttonPanel.add(addButton);
+        buttonPanel.add(removeButton);
         buttonPanel.add(saveAndExitButon);
         buttonPanel.add(cancelButton);
         
@@ -204,6 +225,12 @@ public class GameCreationDialog extends JDialog {
 			}
 		});
 		
+		removeButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//games.removeRows();
+			}
+		});
+		
 		saveAndExitButon.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				games.dump(new GameEntityFilter());
@@ -221,12 +248,19 @@ public class GameCreationDialog extends JDialog {
 		
 		combo.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-
+				String name = (String) combo.getSelectedItem();
+				if(name!=null) {
+					group = gamesRepository.searchGroupByName(name);
+					if(group!=null) {
+						games.load(new GameEntityFilter());
+					}
+				}
 			}
 		});
 	}
 
 	public void prepareCleanScreen() {
+		group = new Group("");
 		
 		combo.removeAllItems();
 		combo.addItem("-");
@@ -234,7 +268,7 @@ public class GameCreationDialog extends JDialog {
 			combo.addItem(group.getName());
 		}
 		
-		
+		games.clean();
 	}
 	
 }
