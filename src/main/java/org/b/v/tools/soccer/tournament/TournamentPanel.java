@@ -80,8 +80,8 @@ public class TournamentPanel extends JPanel {
     									  group.getName(),
     									  team.getField(),
     									  team.getTimeAsString(),
-    									  team.getHomeScore() + " - " + team.getOutScore()
-    									  ,""});
+    									  team.getHomeScore() + " - " + team.getOutScore(),
+    									  team.isFinished()?"ja":"nee"});
     		}
     	}
 	}

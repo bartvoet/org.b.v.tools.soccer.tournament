@@ -13,6 +13,10 @@ public class Game extends Entity {
 	private int outScore;
 	private Date time=new Date();
 	private String field="A";
+	
+	private boolean isFinished;
+
+
 
 	public Game(GroupMember home,GroupMember out) {
 		this.home=home;
@@ -88,5 +92,13 @@ public class Game extends Entity {
 	
 	public String getTimeAsString() {
 		return extractHour(getTime()) + ":" + extractMinutes(getTime());
+	}
+	
+	public void finishMatch() {
+		isFinished=true;
+	}
+	
+	public boolean isFinished() {
+		return isFinished;
 	}
 }

@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+import org.b.v.tools.soccer.tournament.extra.Entity;
 import org.b.v.tools.soccer.tournament.extra.EntityFilter;
 import org.b.v.tools.soccer.tournament.extra.EntityMapper;
 import org.b.v.tools.soccer.tournament.extra.EntityTableModel;
@@ -78,14 +79,15 @@ public class GameCreationDialog extends JDialog {
 	
 	private EntityMapper<Game> groupMemberMapper =
 			new EntityMapper<Game>() {
-				final String[] columnNames = {"Thuis","Uit","Score","Veld","Tijdstip",""};
+				final String[] columnNames = {"Thuis","Uit","Score","Veld","Tijdstip","Gedaan",""};
 				@SuppressWarnings("rawtypes")
 				final Class[] types = new Class [] {
 						java.lang.String.class,
 						java.lang.String.class,
 						java.lang.String.class,
 						java.lang.String.class,
-						java.lang.String.class, 
+						java.lang.String.class,
+						java.lang.Boolean.class,
 						java.lang.Boolean.class};
 				
 				public String[] getColumnNames() {
@@ -96,33 +98,29 @@ public class GameCreationDialog extends JDialog {
 					return types [columnIndex];
 				}
 
-				public String extractHour(Date date) {
-					Calendar calendar = GregorianCalendar.getInstance();
-					calendar.setTime(date);
-					return Integer.toString(calendar.get(Calendar.HOUR_OF_DAY));
-				}
-				
-				public String extractMinutes(Date date) {
-					Calendar calendar = GregorianCalendar.getInstance();
-					calendar.setTime(date);
-					return Integer.toString(calendar.get(Calendar.MINUTE));
-				}
-				
+	
 				public Object[] map(Game entity) {
 					return new Object[]{entity.getHome().getTeamName(),
 										entity.getOther().getTeamName(),
 										entity.getHomeScore() + " - " + entity.getOutScore(),
 										entity.getField(),
 										entity.getTimeAsString(),
+										entity.isFinished(),
 										null};
 				}
 				
 				public Game map(Object[] data) {
-					return new Game(group.getMemberByName((String)data[0]),
+					Game game = new Game(group.getMemberByName((String)data[0]),
 									group.getMemberByName((String)data[1]))
 							.withScores(parseFirstScore(data[2]), parseSecondScore(data[2]))
 							.atField((String)data[3])
 							.onTime(parseTime((String)data[4]));
+					Boolean isFinished = (Boolean)data[5];
+					
+					if(isFinished.booleanValue()) {
+						game.finishMatch();
+					}
+					return game;
 				}
 				
 				private Date parseTime(String string) {
