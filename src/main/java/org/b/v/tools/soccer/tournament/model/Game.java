@@ -1,6 +1,8 @@
 package org.b.v.tools.soccer.tournament.model;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import org.b.v.tools.soccer.tournament.extra.Entity;
 
@@ -57,5 +59,34 @@ public class Game extends Entity {
 	public Game onTime(Date time) {
 		this.time=time;
 		return this;
+	}
+
+	private String extractHour(Date date) {
+		Calendar calendar = GregorianCalendar.getInstance();
+		calendar.setTime(date);
+		
+		int hour = calendar.get(Calendar.HOUR_OF_DAY);
+		
+		if(hour < 10) {
+			return "0" + Integer.toString(hour);
+		}
+		
+		return Integer.toString(hour);
+	}
+	
+	private String extractMinutes(Date date) {
+		Calendar calendar = GregorianCalendar.getInstance();
+		calendar.setTime(date);
+		
+		int minutes = calendar.get(Calendar.MINUTE);
+		if(minutes < 10) {
+			return "0" + Integer.toString(calendar.get(Calendar.MINUTE));
+		}
+		
+		return Integer.toString(calendar.get(Calendar.MINUTE));
+	}
+	
+	public String getTimeAsString() {
+		return extractHour(getTime()) + ":" + extractMinutes(getTime());
 	}
 }

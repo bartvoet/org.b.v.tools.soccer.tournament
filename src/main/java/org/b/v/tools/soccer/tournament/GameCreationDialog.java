@@ -113,7 +113,7 @@ public class GameCreationDialog extends JDialog {
 										entity.getOther().getTeamName(),
 										entity.getHomeScore() + " - " + entity.getOutScore(),
 										entity.getField(),
-										extractHour(entity.getTime()) + ":" + extractMinutes(entity.getTime()),
+										entity.getTimeAsString(),
 										null};
 				}
 				
