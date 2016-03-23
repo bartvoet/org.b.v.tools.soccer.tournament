@@ -4,9 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
+import java.util.GregorianCalendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,8 +27,6 @@ import org.b.v.tools.soccer.tournament.extra.EntityMapper;
 import org.b.v.tools.soccer.tournament.extra.EntityTableModel;
 import org.b.v.tools.soccer.tournament.model.Game;
 import org.b.v.tools.soccer.tournament.model.Group;
-import org.b.v.tools.soccer.tournament.model.GroupMember;
-import org.b.v.tools.soccer.tournament.model.Score;
 
 public class GameCreationDialog extends JDialog {
 
@@ -94,12 +96,24 @@ public class GameCreationDialog extends JDialog {
 					return types [columnIndex];
 				}
 
+				public String extractHour(Date date) {
+					Calendar calendar = GregorianCalendar.getInstance();
+					calendar.setTime(date);
+					return Integer.toString(calendar.get(Calendar.HOUR_OF_DAY));
+				}
+				
+				public String extractMinutes(Date date) {
+					Calendar calendar = GregorianCalendar.getInstance();
+					calendar.setTime(date);
+					return Integer.toString(calendar.get(Calendar.MINUTE));
+				}
+				
 				public Object[] map(Game entity) {
 					return new Object[]{entity.getHome().getTeamName(),
 										entity.getOther().getTeamName(),
 										entity.getHomeScore() + " - " + entity.getOutScore(),
 										entity.getField(),
-										entity.getTime().toString(),
+										extractHour(entity.getTime()) + ":" + extractMinutes(entity.getTime()),
 										null};
 				}
 				
@@ -112,6 +126,17 @@ public class GameCreationDialog extends JDialog {
 				}
 				
 				private Date parseTime(String string) {
+					Matcher matcher = timePattern.matcher(string);
+					if(matcher.matches()) {
+						DateFormat format = new SimpleDateFormat("hh:mm");
+						try {
+							return format.parse(string);
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					
 					return new Date();
 				}
 
