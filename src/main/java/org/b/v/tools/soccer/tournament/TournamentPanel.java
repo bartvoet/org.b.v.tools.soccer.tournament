@@ -4,7 +4,11 @@ package org.b.v.tools.soccer.tournament;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -14,6 +18,7 @@ import javax.swing.table.DefaultTableModel;
 import org.b.v.tools.soccer.tournament.model.Game;
 import org.b.v.tools.soccer.tournament.model.Group;
 import org.b.v.tools.soccer.tournament.model.GroupMember;
+import org.b.v.tools.soccer.tournament.model.Ranking;
 
 public class TournamentPanel extends JPanel {
 
@@ -59,31 +64,63 @@ public class TournamentPanel extends JPanel {
     	}
     	
     	for(Group group :teamsPerGroup) {
-    		Collection<GroupMember> teams = group.getMembers();
-    		for(GroupMember team : teams) {
-    			groupModel.addRow(new Object[]{group.getName(),team.getTeamName(),""});
+    		Collection<Ranking> rankings = group.calculateRanking();
+    		groupModel.addRow(new Object[]{group.getName()});
+    		for(Ranking ranking : rankings) {
+    			groupModel.addRow(new Object[]{"",ranking.getMember().getTeamName(),ranking.getPoints()});
     		}
     	}
     }
 
-	public void refreshGames(Collection<Group> allGroups) {
+    private class Combination {
+    	public Group group;
+    	public Game game;
+
+    	public Combination(Group group, Game team) {
+			this.group = group;
+			this.game = team;
+		}
+    }
+    
+	public <T> void refreshGames(Collection<Group> allGroups) {
 	   	int rowCount = gameModel.getRowCount();
     	for (int i = rowCount - 1; i >= 0; i--) {
     		gameModel.removeRow(i);
     	}
     	
+    	List<Combination> allMatches = new ArrayList<Combination>();
+    	
     	for(Group group :allGroups) {
     		Collection<Game> teams = group.getGames();
     		for(Game team : teams) {
-    			gameModel.addRow(new Object[]{team.getHome().getTeamName(),
-    									  team.getOther().getTeamName(),
-    									  group.getName(),
-    									  team.getField(),
-    									  team.getTimeAsString(),
-    									  team.getHomeScore() + " - " + team.getOutScore(),
-    									  team.isFinished()?"ja":"nee"});
+//    			gameModel.addRow(new Object[]{team.getHome().getTeamName(),
+//    									  team.getOther().getTeamName(),
+//    									  group.getName(),
+//    									  team.getField(),
+//    									  team.getTimeAsString(),
+//    									  team.getHomeScore() + " - " + team.getOutScore(),
+//    									  team.isFinished()?"ja":"nee"});
+    			allMatches.add(new Combination(group,team));
     		}
     	}
+    	
+    	Collections.sort(allMatches, new Comparator<Combination>() {
+    		public int compare(Combination o1, Combination o2) {
+    			return o1.game.getTime().compareTo(o2.game.getTime());
+    		}
+    	});
+    	
+		for(Combination team : allMatches) {
+			gameModel.addRow(new Object[]{
+									  team.game.getHome().getTeamName(),
+									  team.game.getOther().getTeamName(),
+									  team.group.getName(),
+									  team.game.getField(),
+									  team.game.getTimeAsString(),
+									  team.game.getHomeScore() + " - " + team.game.getOutScore(),
+									  team.game.isFinished()?"ja":"nee"});
+		}
+		
 	}
  
 }

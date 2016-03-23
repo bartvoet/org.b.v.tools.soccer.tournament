@@ -2,7 +2,12 @@ package org.b.v.tools.soccer.tournament.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.b.v.tools.soccer.tournament.extra.Entity;
 
@@ -136,5 +141,31 @@ public class Group extends Entity  {
 		return this.games;
 	}
 	
+	private Ranking searchRankingByMember(GroupMember member,Collection<Ranking> set) {
+		for(Ranking ranking:set) {
+			if(member.equals(ranking.getMember())) {
+				return ranking;
+			}
+		}
+		return null;
+	}
 	
+	public List<Ranking> calculateRanking() {
+		List<Ranking> rankings = new ArrayList<Ranking>();
+		
+		for(GroupMember member : members) {
+			rankings.add(new Ranking(member));
+		}
+		
+		for(Game game:games){
+			searchRankingByMember(game.getHome(),rankings).addGame(game);
+			searchRankingByMember(game.getOther(),rankings).addGame(game);
+		}
+		
+		Collections.sort(rankings);
+		Collections.reverse(rankings);
+		
+		
+		return rankings;
+	}
 }

@@ -101,4 +101,20 @@ public class Game extends Entity {
 	public boolean isFinished() {
 		return isFinished;
 	}
+
+	public boolean isDraw() {
+		return (this.getHomeScore() == this.getOutScore());
+	}
+	
+	public boolean hasWon(GroupMember member) {
+		if(isDraw()) {
+			return false;
+		} else {
+			if(member.equals(this.home)) {
+				return this.homeScore > this.outScore;
+			} else {
+				return this.outScore > this.homeScore;
+			}
+		}
+	}
 }
