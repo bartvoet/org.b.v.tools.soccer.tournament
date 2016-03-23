@@ -79,26 +79,27 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 	}
 	
     public static void main(String[] args) {
-        
     	TournamentApplication frame = new TournamentApplication();
-
-    	
-//        Object[][] data = {
-//    	        {"Baal",       "Zemst",       "U17", "A", "12:30"},
-//    	        {"Sterrebeek", "Ramsel",      "U17", "B", "12:30"},
-//    	        {"Zemst",      "Sterrebeek",  "U17", "C", "13:00"},
-//    	        {"Baal",       "Ramsel",      "U17", "A", "12:30"},
-//    	        {"Zemst",      "Ramsel",      "U17", "A", "12:30"},
-//    	        {"Zemst",      "Ramsel",      "U17", "A", "12:30"}
-//            };
-//        
-//        for(Object[] row : data) {
-//        	frame.newContentPane.model.addRow(row);
-//        }
     }
 
 	public void update() {
 		this.newContentPane.refreshGroups(gamesRepository.getAllGroups());
+		this.newContentPane.refreshGames(gamesRepository.getAllGroups());
+		
+		
+    	
+//      Object[][] data = {
+//  	        {"Baal",       "Zemst",       "U17", "A", "12:30"},
+//  	        {"Sterrebeek", "Ramsel",      "U17", "B", "12:30"},
+//  	        {"Zemst",      "Sterrebeek",  "U17", "C", "13:00"},
+//  	        {"Baal",       "Ramsel",      "U17", "A", "12:30"},
+//  	        {"Zemst",      "Ramsel",      "U17", "A", "12:30"},
+//  	        {"Zemst",      "Ramsel",      "U17", "A", "12:30"}
+//          };
+//      
+//      for(Object[] row : data) {
+//      	frame.newContentPane.model.addRow(row);
+//      }
 	}
     
     //aanmaken van groep

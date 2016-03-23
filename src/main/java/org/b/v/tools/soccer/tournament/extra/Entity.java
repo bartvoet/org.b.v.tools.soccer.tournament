@@ -17,6 +17,10 @@ public abstract class Entity implements Comparable<Entity> {
 	
 	@Override
 	public boolean equals(Object obj) {
+		if(this==obj) {
+			return true;
+		}
+		
 		if(obj instanceof Entity) {
 			Entity otherGroup = (Entity)obj;
 			return this.id==otherGroup.id;
@@ -26,5 +30,14 @@ public abstract class Entity implements Comparable<Entity> {
 	
 	public boolean containsId() {
 		return !(id==null);
+	}
+	
+	@Override
+	public int hashCode() {
+		if(id!=null) {
+			return id.hashCode();
+		}
+		
+		return super.hashCode();
 	}
 }

@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -70,7 +71,7 @@ public class GroupDialog extends JDialog {
 
 	private EntityFilter<GroupMember> filter =
 		new EntityFilter<GroupMember>() {
-			public List<GroupMember> getEntities() {
+			public Collection<GroupMember> getEntities() {
 				return groupCurrentlyProcessing.getMembers();
 			}
 	

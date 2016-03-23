@@ -1,12 +1,12 @@
 package org.b.v.tools.soccer.tournament.extra;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface EntityFilter<T> {
 
-	List<T> getEntities();
+	Collection<T> getEntities();
 	void saveNewEntity(T entity);
 	void removeExistingEntity(T entity);
-	void updateEntity(T t);
+	void updateEntity(T entity);
 
 }

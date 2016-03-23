@@ -5,14 +5,13 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import org.b.v.tools.soccer.tournament.model.Game;
 import org.b.v.tools.soccer.tournament.model.Group;
 import org.b.v.tools.soccer.tournament.model.GroupMember;
 
@@ -60,11 +59,28 @@ public class TournamentPanel extends JPanel {
     	}
     	
     	for(Group group :teamsPerGroup) {
-    		List<GroupMember> teams = group.getMembers();
+    		Collection<GroupMember> teams = group.getMembers();
     		for(GroupMember team : teams) {
     			groupModel.addRow(new Object[]{group.getName(),team.getTeamName(),""});
     		}
     	}
     }
+
+	public void refreshGames(Collection<Group> allGroups) {
+	   	int rowCount = model.getRowCount();
+    	for (int i = rowCount - 1; i >= 0; i--) {
+    		model.removeRow(i);
+    	}
+    	
+    	for(Group group :allGroups) {
+    		Collection<Game> teams = group.getGames();
+    		for(Game team : teams) {
+    			model.addRow(new Object[]{team.getHome().getTeamName(),
+    									  team.getHome().getTeamName(),
+    									  group.getName(),
+    									  "",""});
+    		}
+    	}
+	}
  
 }

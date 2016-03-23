@@ -1,11 +1,14 @@
 package org.b.v.tools.soccer.tournament.extra;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+
+import org.b.v.tools.soccer.tournament.model.Game;
 
 //extends or composite???
 //keep track of rows
@@ -127,8 +130,22 @@ public class EntityTableModel<T extends Entity>  {
     		model.removeRow(i);
     	}
 		
-		List<T> storedEntities = this.filter.getEntities();
+		Collection<T> storedEntities = this.filter.getEntities();
 		for(T entity:storedEntities) {
+			Object row[] = mapper.map(entity);
+			Object actual[] = new Object[row.length + 1];
+			for(int i=0;i<row.length;i++) {
+				actual[i] = row[i];
+			}
+			actual[row.length]=entity.getId();
+			model.addRow(actual);
+		}
+	}
+	
+	public void add(List<T> newEntities, EntityFilter<T> repository ) {
+		this.filter=repository;
+
+		for(T entity:newEntities) {
 			Object row[] = mapper.map(entity);
 			Object actual[] = new Object[row.length + 1];
 			for(int i=0;i<row.length;i++) {

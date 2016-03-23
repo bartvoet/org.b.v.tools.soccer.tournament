@@ -5,15 +5,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.b.v.tools.soccer.tournament.model.Game;
+import org.b.v.tools.soccer.tournament.extra.Entity;
 import org.b.v.tools.soccer.tournament.model.Group;
-import org.b.v.tools.soccer.tournament.model.GroupMember;
 
 public class GroupRepository {
 	
 	private AtomicLong groupIds = new AtomicLong();
 	private List<Group> groups = new ArrayList<Group>(); 
-	//private List<Group> groupMembers = new ArrayList<Group>(); 
 	
 	public Group searchGroupByName(String name) {
 		for(Group group:groups) {
@@ -35,26 +33,9 @@ public class GroupRepository {
 		}
 	}
 
-	public void enrichWithId(GroupMember entity) {
+	public void enrichWithId(Entity entity) {
 		entity.setId(groupIds.getAndIncrement());
 	}
 
-	public List<Game> generateCandidateGames(String groupName) {
-		List<Game> games = new ArrayList<Game>();
-		Group group = this.searchGroupByName(groupName);
-		List<GroupMember> copy = new ArrayList<GroupMember>(group.getMembers());
-		
-		for(GroupMember member : group.getMembers()) {
-			for(GroupMember counter : copy) {
-				if(!member.equals(counter)) {
-					Game game = new Game(member,counter);
-					games.add(game);
-				}
-			}
-			copy.remove(copy.indexOf(member));
-		}
-		
-		return games;
-	}
 
 }

@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -137,11 +138,10 @@ public class GameCreationDialog extends JDialog {
 	private void initializeButtonPanel() {
 		JPanel buttonPanel = new JPanel();
         
-		generateButton = new JButton("genereer");
-        addButton = new JButton("Toevoege");
+		generateButton = new JButton("Genereer");
+        addButton = new JButton("Toevoegen");
         saveAndExitButon = new JButton("OK");
         cancelButton = new JButton("Cancel");
-        
         
         buttonPanel.add(generateButton);
         buttonPanel.add(addButton);
@@ -151,43 +151,52 @@ public class GameCreationDialog extends JDialog {
         add(buttonPanel,BorderLayout.SOUTH);
 	}
 
+	private class GameEntityFilter implements EntityFilter<Game>{
+
+		public Collection<Game> getEntities() {
+			return group.getGames();
+		}
+
+		public void saveNewEntity(Game entity) {
+			gamesRepository.enrichWithId(entity);
+			group.addNewGame(entity);
+		}
+
+		public void removeExistingEntity(Game entity) {
+			group.removeGame(entity);
+		}
+
+		public void updateEntity(Game entity) {
+			group.updateGame(entity);
+		}
+		
+	}
+	
+	
 	private void initializeButtonActions() {
+		
 		generateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String name = (String)combo.getSelectedItem();
-				final List<Game> gameList =  gamesRepository.generateCandidateGames(name);
-				games.load(new EntityFilter<Game>(){
-
-					public List<Game> getEntities() {
-						return gameList;
-					}
-
-					public void saveNewEntity(Game entity) {
-						// TODO Auto-generated method stub
-						
-					}
-
-					public void removeExistingEntity(Game entity) {
-						// TODO Auto-generated method stub
-						
-					}
-
-					public void updateEntity(Game t) {
-						// TODO Auto-generated method stub
-						
-					}
-					
-				});
+				group = gamesRepository.searchGroupByName(name);
+				games.add(group.generateCandidateGames(name),new GameEntityFilter());
 			}
 		});
 
 		
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				games.addEmptyEntityFromTable();
 			}
 		});
 		
+		saveAndExitButon.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				games.dump(new GameEntityFilter());
+				event.update();
+				GameCreationDialog.this.setVisible(false);
+			}
+		});
 				
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -210,6 +219,7 @@ public class GameCreationDialog extends JDialog {
 		for(Group group : gamesRepository.getAllGroups()) {
 			combo.addItem(group.getName());
 		}
+		
 		
 	}
 }

@@ -1,6 +1,7 @@
 package org.b.v.tools.soccer.tournament.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.b.v.tools.soccer.tournament.extra.Entity;
@@ -47,7 +48,7 @@ public class Group extends Entity  {
 		return false;
 	}
 
-	public List<GroupMember> getMembers() {
+	public Collection<GroupMember> getMembers() {
 		return this.members;
 	}
 
@@ -85,7 +86,55 @@ public class Group extends Entity  {
 		return null;
 	}
 
+	public List<Game> generateCandidateGames(String name2) {
+		List<GroupMember> copy = new ArrayList<GroupMember>(this.getMembers());
+		List<Game> tempGames = new ArrayList<Game>();
+		
+		for(GroupMember member : this.getMembers()) {
+			for(GroupMember counter : copy) {
+				if(!member.equals(counter)) {
+					Game game = new Game(member,counter);
+					tempGames.add(game);
+				}
+			}
+			copy.remove(copy.indexOf(member));
+		}
+		
+		return tempGames;
+	}
 
+	public void addNewGame(Game entity) {
+		if(games.contains(entity)) {
+			return;
+		}
+		
+		this.games.add(entity);
+	}
+
+	public void removeGame(Game entity) {
+		this.games.remove(entity);
+	}
+
+	public void updateGame(Game entity) {
+		boolean found=false;
+		int position=0;
+		for(Game corresponding:this.games) {
+			if(corresponding.equals(entity)) {
+				found=true;
+				break;
+			}
+			position++;
+		}
+		
+		if(found) {
+			this.games.set(position, entity);
+		}
+		
+	}
+
+	public Collection<Game> getGames() {
+		return this.games;
+	}
 	
 	
 }
