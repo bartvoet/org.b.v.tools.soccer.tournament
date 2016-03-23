@@ -22,7 +22,6 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 	private final GroupRepository gamesRepository = new GroupRepository();
 	private final GroupDialog groupDialog=new GroupDialog(gamesRepository,this);
 	private final GameCreationDialog gameDialog=new GameCreationDialog(gamesRepository,this);
-	private final TeamDialog teamDialog = new TeamDialog();
 		
 	public TournamentApplication() {
 		super("Tornooi");
