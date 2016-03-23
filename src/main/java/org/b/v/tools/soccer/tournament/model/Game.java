@@ -1,16 +1,18 @@
 package org.b.v.tools.soccer.tournament.model;
 
-public class Game {
+import org.b.v.tools.soccer.tournament.extra.Entity;
+
+public class Game extends Entity {
 	private GroupMember home;
 	private GroupMember other;
-	private Score homeScore;
-	private Score outScore;
+	private int homeScore;
+	private int outScore;
 
 	public Game(GroupMember home,GroupMember out) {
 		this.home=home;
 		this.other=out;
-		this.homeScore=new Score();
-		this.outScore=new Score();
+		this.homeScore=0;
+		this.outScore=0;
 	}
 	
 	public GroupMember getHome() {
@@ -21,15 +23,15 @@ public class Game {
 		return other;
 	}
 
-	public Score getHomeScore() {
+	public int getHomeScore() {
 		return homeScore;
 	}
 
-	public Score getOutScore() {
+	public int getOutScore() {
 		return outScore;
 	}
 	
-	public Game withScores(Score homeScore,Score outScore) {
+	public Game withScores(int homeScore,int outScore) {
 		this.homeScore=homeScore;
 		this.outScore=outScore;
 		return this;

@@ -76,6 +76,15 @@ public class Group extends Entity  {
 		}
 	}
 
+	public GroupMember getMemberByName(String object) {
+		for(GroupMember member : members) {
+			if(member.getTeamName().equals(object)) {
+				return member;
+			}
+		}
+		return null;
+	}
+
 
 	
 	

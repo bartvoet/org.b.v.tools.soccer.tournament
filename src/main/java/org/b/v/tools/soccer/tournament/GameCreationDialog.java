@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -13,7 +14,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+import org.b.v.tools.soccer.tournament.extra.EntityFilter;
+import org.b.v.tools.soccer.tournament.extra.EntityMapper;
+import org.b.v.tools.soccer.tournament.extra.EntityTableModel;
+import org.b.v.tools.soccer.tournament.model.Game;
 import org.b.v.tools.soccer.tournament.model.Group;
+import org.b.v.tools.soccer.tournament.model.GroupMember;
+import org.b.v.tools.soccer.tournament.model.Score;
 
 public class GameCreationDialog extends JDialog {
 
@@ -29,6 +36,11 @@ public class GameCreationDialog extends JDialog {
 	private UpdateEvent event;
 
 	private JTable table;
+	private EntityTableModel<Game> games;
+	
+	private JButton generateButton;
+
+	private JButton saveAndExitButon;
 	
 	
 	
@@ -51,12 +63,68 @@ public class GameCreationDialog extends JDialog {
         add(infoPanel,BorderLayout.NORTH);
 	}
 		
+	private Group group;
+	
+	private EntityMapper<Game> groupMemberMapper =
+			new EntityMapper<Game>() {
+				final String[] columnNames = {"Thuis","Uit","Score",""};
+				@SuppressWarnings("rawtypes")
+				final Class[] types = new Class [] {java.lang.String.class,java.lang.String.class,java.lang.String.class, java.lang.Boolean.class};
+				
+				public String[] getColumnNames() {
+					return columnNames;
+				}
+
+				public Class<?> getType(int columnIndex) {
+					return types [columnIndex];
+				}
+
+				public Object[] map(Game entity) {
+					return new Object[]{entity.getHome().getTeamName(),
+										entity.getOther().getTeamName(),
+										entity.getHomeScore() + " - " + entity.getOutScore()};
+				}
+				
+				public Game map(Object[] data) {
+					return new Game(group.getMemberByName((String)data[0]),group.getMemberByName((String)data[1]))
+							.withScores(parseFirstScore(data[2]), parseSecondScore(data[2]));
+				}
+				
+				private int parseFirstScore(Object object) {
+					// TODO Auto-generated method stub
+					return 0;
+				}
+
+				private int parseSecondScore(Object object) {
+					// TODO Auto-generated method stub
+					return 0;
+				}
+
+				public Comparable<?> getId(Game entity) {
+					return new Long(entity.getId());
+				}
+				
+				public Object[] getDefaultData() {
+					return new Object[]{"","","0-0",null};
+				}
+				
+				public boolean isMarkedToBeDeleted(Object[] data) {
+					Object bool = data[1];
+					if(bool!=null) {
+						return (Boolean)data[3];
+					}
+					return false;
+				}
+			};	
+
+	
 	
 	private void initializeTable() {
  		
-		//data = new EntityTableModel<GroupMember>(groupMemberMapper);
+		games = new EntityTableModel<Game>(groupMemberMapper);
 		
         table = new JTable();
+        games.configureTable(table);
         
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane,BorderLayout.CENTER);
@@ -69,16 +137,51 @@ public class GameCreationDialog extends JDialog {
 	private void initializeButtonPanel() {
 		JPanel buttonPanel = new JPanel();
         
-        addButton = new JButton("Toevoegen");
+		generateButton = new JButton("genereer");
+        addButton = new JButton("Toevoege");
+        saveAndExitButon = new JButton("OK");
         cancelButton = new JButton("Cancel");
         
+        
+        buttonPanel.add(generateButton);
         buttonPanel.add(addButton);
+        buttonPanel.add(saveAndExitButon);
         buttonPanel.add(cancelButton);
         
         add(buttonPanel,BorderLayout.SOUTH);
 	}
 
 	private void initializeButtonActions() {
+		generateButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String name = (String)combo.getSelectedItem();
+				final List<Game> gameList =  gamesRepository.generateCandidateGames(name);
+				games.load(new EntityFilter<Game>(){
+
+					public List<Game> getEntities() {
+						return gameList;
+					}
+
+					public void saveNewEntity(Game entity) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					public void removeExistingEntity(Game entity) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					public void updateEntity(Game t) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+				});
+			}
+		});
+
+		
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
