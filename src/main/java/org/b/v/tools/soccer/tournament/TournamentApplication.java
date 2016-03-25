@@ -1,14 +1,19 @@
 package org.b.v.tools.soccer.tournament;
 
 
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JTextArea;
 
 //stap 1: data updaten 
 
@@ -85,7 +90,15 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
         JMenuItem todo = new JMenuItem("Todo");
         todo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				JDialog todo=new JDialog();
+				todo.setSize(new Dimension(600,300));
+				JTextArea text = new JTextArea();
+				text.setText(
+						  "TODO's:\n"
+						+ "* Save state of the games\n"
+						+ "* Refining rules of points" );
+				todo.add(text);
+				todo.setVisible(true);
 			}
 		});
         menu.add(todo);
