@@ -8,12 +8,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JTextArea;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 //stap 1: data updaten 
 
@@ -77,10 +79,43 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 
 	private void initializeTheFileMenu(JMenuBar menuBar) {
 		JMenu menu = new JMenu("File");
-        menu.setMnemonic(KeyEvent.VK_F);
-        menu.add(new JMenuItem("Open"));
-        menu.add(new JMenuItem("Save"));
+		JMenuItem saveTournament = new JMenuItem("Save");
+		JMenuItem openTournament = new JMenuItem("Open");
+
+		
+		menu.setMnemonic(KeyEvent.VK_F);
+        menu.add(openTournament);
+        menu.add(saveTournament); 
         menuBar.add(menu);
+        
+        openTournament.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				 JFileChooser chooser = new JFileChooser();
+				    FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				        "Tournament file", "csv", "tcsv");
+				    chooser.setFileFilter(filter);
+				    int returnVal = chooser.showOpenDialog(TournamentApplication.this);
+				    if(returnVal == JFileChooser.APPROVE_OPTION) {
+				       System.out.println("You chose to open this file: " +
+				            chooser.getSelectedFile().getName());
+				    };
+			}
+		});
+        
+        saveTournament.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				 JFileChooser chooser = new JFileChooser();
+				    FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				        "Tournament file", "csv", "tcsv");
+				    chooser.setFileFilter(filter);
+				    int returnVal = chooser.showSaveDialog(TournamentApplication.this);
+				    if(returnVal == JFileChooser.APPROVE_OPTION) {
+				       System.out.println("You chose to save this file: " +
+				            chooser.getSelectedFile().getName());
+				    };
+			}
+		});
+
 	}
 	
 	private void initializeTheHelpMenu(JMenuBar menuBar) {
