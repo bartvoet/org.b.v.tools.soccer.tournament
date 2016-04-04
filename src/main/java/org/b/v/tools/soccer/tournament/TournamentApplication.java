@@ -27,6 +27,8 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 	private final GroupRepository gamesRepository = new GroupRepository();
 	private final GroupDialog groupDialog=new GroupDialog(gamesRepository,this);
 	private final GameCreationDialog gameDialog=new GameCreationDialog(gamesRepository,this);
+	
+	private String currentFile;
 		
 	public TournamentApplication() {
 		super("Tornooi");
@@ -76,9 +78,9 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 	}
 
     private static FileNameExtensionFilter filter = 
-    		new FileNameExtensionFilter("Tournament file", "csv", "tcsv");
+    		new FileNameExtensionFilter("Tournament file", "trm");
 
-	private JMenuItem saveTournament = new JMenuItem("Save");
+	private JMenuItem saveTournamentAs = new JMenuItem("Save");
 	private JMenuItem openTournament = new JMenuItem("Open");
     
 	
@@ -87,31 +89,36 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 		
 		menu.setMnemonic(KeyEvent.VK_F);
         menu.add(openTournament);
-        menu.add(saveTournament); 
+        menu.add(saveTournamentAs); 
         menuBar.add(menu);
         
         openTournament.addActionListener(new ActionListener() {
+			
+
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser chooser = new JFileChooser();
 			    chooser.setFileFilter(filter);
 			    int returnVal = chooser.showOpenDialog(TournamentApplication.this);
 			    if(returnVal == JFileChooser.APPROVE_OPTION) {
 			    	gamesRepository.load(chooser.getSelectedFile().getAbsolutePath());
+			    	currentFile = chooser.getSelectedFile().getAbsolutePath();
 			    	update();
+			    	setTitle("Tornooi :" + currentFile);
 			    };
 			}
 		});
         
-        saveTournament.addActionListener(new ActionListener() {
+        saveTournamentAs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			 	JFileChooser chooser = new JFileChooser();
 			    chooser.setFileFilter(filter);
 			    int returnVal = chooser.showSaveDialog(TournamentApplication.this);
 			    if(returnVal == JFileChooser.APPROVE_OPTION) {
 			    	gamesRepository.persist(chooser.getSelectedFile().getAbsolutePath());
-			    	System.out.println("You chose to save this file: " +
-			       chooser.getSelectedFile().getAbsolutePath());
+			    	currentFile = chooser.getSelectedFile().getAbsolutePath();
+			    	setTitle("Tornooi :" + currentFile);
 			    };
+			    
 			}
 		});
 
@@ -152,5 +159,12 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 	public void update() {
 		this.newContentPane.refreshGroups(gamesRepository.getAllGroups());
 		this.newContentPane.refreshGames(gamesRepository.getAllGroups());
+		
+		if(this.currentFile == null) {
+			setTitle("Tornooi *");
+			
+		} else {
+			setTitle("Tornooi :" + this.currentFile + " *");
+		}
 	}
 }
