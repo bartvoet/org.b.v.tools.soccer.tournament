@@ -1,5 +1,6 @@
 package org.b.v.tools.soccer.tournament.model;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;

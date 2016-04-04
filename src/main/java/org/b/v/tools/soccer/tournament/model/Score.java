@@ -1,6 +1,8 @@
 package org.b.v.tools.soccer.tournament.model;
 
-public class Score {
+import java.io.Serializable;
+
+public class Score  implements Serializable{
 	private int goals;
 	private int penalties;
 	

@@ -77,11 +77,15 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
         menuBar.add(menu);
 	}
 
+    private static FileNameExtensionFilter filter = 
+    		new FileNameExtensionFilter("Tournament file", "csv", "tcsv");
+
+	private JMenuItem saveTournament = new JMenuItem("Save");
+	private JMenuItem openTournament = new JMenuItem("Open");
+    
+	
 	private void initializeTheFileMenu(JMenuBar menuBar) {
 		JMenu menu = new JMenu("File");
-		JMenuItem saveTournament = new JMenuItem("Save");
-		JMenuItem openTournament = new JMenuItem("Open");
-
 		
 		menu.setMnemonic(KeyEvent.VK_F);
         menu.add(openTournament);
@@ -90,29 +94,26 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
         
         openTournament.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				 JFileChooser chooser = new JFileChooser();
-				    FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				        "Tournament file", "csv", "tcsv");
-				    chooser.setFileFilter(filter);
-				    int returnVal = chooser.showOpenDialog(TournamentApplication.this);
-				    if(returnVal == JFileChooser.APPROVE_OPTION) {
-				       System.out.println("You chose to open this file: " +
-				            chooser.getSelectedFile().getName());
-				    };
+				JFileChooser chooser = new JFileChooser();
+			    chooser.setFileFilter(filter);
+			    int returnVal = chooser.showOpenDialog(TournamentApplication.this);
+			    if(returnVal == JFileChooser.APPROVE_OPTION) {
+			    	gamesRepository.load(chooser.getSelectedFile().getAbsolutePath());
+			    	update();
+			    };
 			}
 		});
         
         saveTournament.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				 JFileChooser chooser = new JFileChooser();
-				    FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				        "Tournament file", "csv", "tcsv");
-				    chooser.setFileFilter(filter);
-				    int returnVal = chooser.showSaveDialog(TournamentApplication.this);
-				    if(returnVal == JFileChooser.APPROVE_OPTION) {
-				       System.out.println("You chose to save this file: " +
-				            chooser.getSelectedFile().getName());
-				    };
+			 	JFileChooser chooser = new JFileChooser();
+			    chooser.setFileFilter(filter);
+			    int returnVal = chooser.showSaveDialog(TournamentApplication.this);
+			    if(returnVal == JFileChooser.APPROVE_OPTION) {
+			    	gamesRepository.persist(chooser.getSelectedFile().getAbsolutePath());
+			    	System.out.println("You chose to save this file: " +
+			       chooser.getSelectedFile().getAbsolutePath());
+			    };
 			}
 		});
 

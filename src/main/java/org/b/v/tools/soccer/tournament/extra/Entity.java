@@ -1,6 +1,9 @@
 package org.b.v.tools.soccer.tournament.extra;
 
-public abstract class Entity implements Comparable<Entity> {
+import java.io.Serializable;
+
+public abstract class Entity implements Comparable<Entity>,Serializable {
+	private static final long serialVersionUID = 1L;
 	private Long id;
 
 	public Long getId() {
