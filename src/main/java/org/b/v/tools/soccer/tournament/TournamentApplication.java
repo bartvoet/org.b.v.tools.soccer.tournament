@@ -135,7 +135,6 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 				JTextArea text = new JTextArea();
 				text.setText(
 						  "TODO's:\n"
-						+ "* Save state of the games\n"
 						+ "* Refining rules of points" );
 				todo.add(text);
 				todo.setVisible(true);
