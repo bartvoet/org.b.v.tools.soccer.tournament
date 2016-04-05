@@ -257,7 +257,7 @@ public class GameCreationDialog extends JDialog {
 		saveAndExitButon.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				games.dump(new GameEntityFilter());
-				event.update();
+				event.registerUpdate();
 				GameCreationDialog.this.setVisible(false);
 			}
 		});

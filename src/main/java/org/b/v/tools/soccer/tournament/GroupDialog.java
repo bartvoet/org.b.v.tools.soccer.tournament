@@ -188,7 +188,7 @@ public class GroupDialog extends JDialog {
 				gamesRepository.createOrSaveGroup(groupCurrentlyProcessing);
 				data.dump(filter);
 				
-				event.update();
+				event.registerUpdate();
 				GroupDialog.this.setVisible(false);
 			}
 		});

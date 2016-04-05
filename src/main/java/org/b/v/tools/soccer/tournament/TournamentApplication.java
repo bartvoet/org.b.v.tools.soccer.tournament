@@ -15,10 +15,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JTextArea;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-//stap 1: data updaten 
-
-//TODO: menu tournament - team -game
-
 public class TournamentApplication extends JFrame implements UpdateEvent {
 
 	private static final long serialVersionUID = -2747948660004275050L;
@@ -28,7 +24,6 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 	private final GroupDialog groupDialog=new GroupDialog(gamesRepository,this);
 	private final GameCreationDialog gameDialog=new GameCreationDialog(gamesRepository,this);
 	
-	private String currentFile;
 		
 	public TournamentApplication() {
 		super("Tornooi");
@@ -77,12 +72,15 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
         menuBar.add(menu);
 	}
 
+	private SaveToFileState fileState = new SaveToFileState(this, gamesRepository);
+	
     private static FileNameExtensionFilter filter = 
     		new FileNameExtensionFilter("Tournament file", "trm");
 
-	private JMenuItem saveTournamentAs = new JMenuItem("Save as");
-	private JMenuItem saveTournament = new JMenuItem("Save");
+	private JMenuItem saveTournamentAs = new JMenuItem("Bewaar als");
+	private JMenuItem saveTournament = new JMenuItem("Bewaar");
 	private JMenuItem openTournament = new JMenuItem("Open");
+	private JMenuItem newTournament = new JMenuItem("Nieuw");
     
 	
 	private void initializeTheFileMenu(JMenuBar menuBar) {
@@ -92,51 +90,34 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
         menu.add(openTournament);
         menu.add(saveTournamentAs);
         menu.add(saveTournament);
+        menu.add(newTournament);
         menuBar.add(menu);
         
         openTournament.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JFileChooser chooser = new JFileChooser();
-			    chooser.setFileFilter(filter);
-			    int returnVal = chooser.showOpenDialog(TournamentApplication.this);
-			    if(returnVal == JFileChooser.APPROVE_OPTION) {
-			    	gamesRepository.load(chooser.getSelectedFile().getAbsolutePath());
-			    	currentFile = chooser.getSelectedFile().getAbsolutePath();
-			    	update();
-			    	setTitle("Tornooi :" + currentFile);
-			    };
+				fileState.open();
+				refreshScreens();
 			}
 		});
         
         saveTournamentAs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-			 	JFileChooser chooser = new JFileChooser();
-			    chooser.setFileFilter(filter);
-			    int returnVal = chooser.showSaveDialog(TournamentApplication.this);
-			    if(returnVal == JFileChooser.APPROVE_OPTION) {
-			    	gamesRepository.persist(chooser.getSelectedFile().getAbsolutePath());
-			    	currentFile = chooser.getSelectedFile().getAbsolutePath();
-			    	setTitle("Tornooi :" + currentFile);
-			    };
-			    
+				fileState.saveAs();
+				updateTitleBarWithState();
 			}
 		});
         
         saveTournament.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-			 	if(currentFile!=null) {
-			 		gamesRepository.persist(currentFile);
-			    	setTitle("Tornooi :" + currentFile);
-			 	} else {
-					JFileChooser chooser = new JFileChooser();
-				    chooser.setFileFilter(filter);
-				    int returnVal = chooser.showSaveDialog(TournamentApplication.this);
-				    if(returnVal == JFileChooser.APPROVE_OPTION) {
-				    	gamesRepository.persist(chooser.getSelectedFile().getAbsolutePath());
-				    	currentFile = chooser.getSelectedFile().getAbsolutePath();
-				    	setTitle("Tornooi :" + currentFile);
-				    };
-			 	}
+				fileState.save();
+				updateTitleBarWithState();
+			}
+		});
+        
+        newTournament.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				fileState.newTournament();
+				registerUpdate();
 			}
 		});
 
@@ -167,22 +148,31 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
         menuBar.add(menu);
 	}
 	
-	
+
 	private static TournamentApplication frame;
     
 	public static void main(String[] args) {
     	 frame = new TournamentApplication();
     }
 
-	public void update() {
+	public void registerUpdate() {
+		fileState.markChange();
+		refreshScreens();
+	}
+
+	private void refreshScreens() {
 		this.newContentPane.refreshGroups(gamesRepository.getAllGroups());
 		this.newContentPane.refreshGames(gamesRepository.getAllGroups());
-		
-		if(this.currentFile == null) {
-			setTitle("Tornooi *");
-			
-		} else {
-			setTitle("Tornooi :" + this.currentFile + " *");
+
+		updateTitleBarWithState();
+	}
+
+	private void updateTitleBarWithState() {
+		switch(fileState.getState()) {
+			case NEW:setTitle("Tornooi (nieuw)");break;
+			case NEW_NOT_SAVED:setTitle("Tornooi (nieuw) *");break;
+			case LOADED:setTitle(fileState.getPath());break;
+			case LOADED_NOT_SAVED:setTitle(fileState.getPath() + "*");break;
 		}
 	}
 }
