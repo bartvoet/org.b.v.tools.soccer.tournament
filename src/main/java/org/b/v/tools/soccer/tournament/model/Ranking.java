@@ -46,11 +46,35 @@ public class Ranking implements Comparable<Ranking> {
 
 	public int compareTo(Ranking o) {
 		int compare = this.getPoints().compareTo(o.getPoints());
-//		if(compare == 0) {
-//			return this.member.getTeamName()
-//					.compareTo(o.member.getTeamName());
-//		}
+		
+		if(compare==0) {
+			compare = this.getTotalOfPenalties().compareTo(o.getTotalOfPenalties());
+			if(compare== 0) {
+				compare = this.getTotalOfGoals().compareTo(o.getTotalOfGoals());
+			}
+		}
+		
 		return compare;
+	}
+
+	private Integer getTotalOfGoals() {
+		int total = 0;
+		
+		for(Game game:this.matches) {
+			total += game.getGoalsFor(this.member);
+		}
+		
+		return new Integer(total);
+	}
+
+	private Integer getTotalOfPenalties() {
+		int total = 0;
+		
+		for(Game game:this.matches) {
+			total += game.getPenaltiesFor(this.member);
+		}
+		
+		return new Integer(total);
 	}
 
 	public void addGame(Game match) {

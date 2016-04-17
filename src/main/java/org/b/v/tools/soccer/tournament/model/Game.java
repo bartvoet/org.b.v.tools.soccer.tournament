@@ -12,6 +12,8 @@ public class Game extends Entity {
 	private GroupMember other;
 	private int homeScore;
 	private int outScore;
+	private int homePenalties;
+	private int outPenalties;
 	private Date time=new Date();
 	private String field="A";
 	
@@ -45,6 +47,12 @@ public class Game extends Entity {
 	public Game withScores(int homeScore,int outScore) {
 		this.homeScore=homeScore;
 		this.outScore=outScore;
+		return this;
+	}
+	
+	public Game withPenalties(int homeScore,int outScore) {
+		this.homePenalties=homeScore;
+		this.outPenalties=outScore;
 		return this;
 	}
 
@@ -117,5 +125,33 @@ public class Game extends Entity {
 				return this.outScore > this.homeScore;
 			}
 		}
+	}
+
+	public int getHomePenalties() {
+		return this.homePenalties;
+	}
+
+	public int getOutPenalties() {
+		return this.outPenalties;
+	}
+	
+	public int getPenaltiesFor(GroupMember member) {
+		if(this.getHome().equals(member)) {
+			return this.getHomePenalties();
+		} 
+		if(this.getOther().equals(member)) {
+			return this.getOutPenalties();
+		}
+		throw new RuntimeException();
+	}
+	
+	public int getGoalsFor(GroupMember member) {
+		if(this.getHome().equals(member)) {
+			return this.getHomeScore();
+		} 
+		if(this.getOther().equals(member)) {
+			return this.getOutScore();
+		}
+		throw new RuntimeException();
 	}
 }

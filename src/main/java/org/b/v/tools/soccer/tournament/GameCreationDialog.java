@@ -79,9 +79,10 @@ public class GameCreationDialog extends JDialog {
 	
 	private EntityMapper<Game> groupMemberMapper =
 			new EntityMapper<Game>() {
-				final String[] columnNames = {"Thuis","Uit","Score","Veld","Tijdstip","Gedaan",""};
+				final String[] columnNames = {"Thuis","Uit","Score","Penalties","Veld","Tijdstip","Gedaan",""};
 				@SuppressWarnings("rawtypes")
 				final Class[] types = new Class [] {
+						java.lang.String.class,
 						java.lang.String.class,
 						java.lang.String.class,
 						java.lang.String.class,
@@ -103,6 +104,7 @@ public class GameCreationDialog extends JDialog {
 					return new Object[]{entity.getHome().getTeamName(),
 										entity.getOther().getTeamName(),
 										entity.getHomeScore() + " - " + entity.getOutScore(),
+										entity.getHomePenalties() + " - " + entity.getOutPenalties(),
 										entity.getField(),
 										entity.getTimeAsString(),
 										entity.isFinished(),
@@ -113,9 +115,10 @@ public class GameCreationDialog extends JDialog {
 					Game game = new Game(group.getMemberByName((String)data[0]),
 									group.getMemberByName((String)data[1]))
 							.withScores(parseFirstScore(data[2]), parseSecondScore(data[2]))
-							.atField((String)data[3])
-							.onTime(parseTime((String)data[4]));
-					Boolean isFinished = (Boolean)data[5];
+							.withPenalties(parseFirstScore(data[3]), parseSecondScore(data[3]))
+							.atField((String)data[4])
+							.onTime(parseTime((String)data[5]));
+					Boolean isFinished = (Boolean)data[6];
 					
 					if(isFinished.booleanValue()) {
 						game.finishMatch();
@@ -162,7 +165,7 @@ public class GameCreationDialog extends JDialog {
 				}
 				
 				public Object[] getDefaultData() {
-					return new Object[]{"","","0-0","","",null};
+					return new Object[]{"","","0-0","0-0","","",null};
 				}
 				
 				public boolean isMarkedToBeDeleted(Object[] data) {
