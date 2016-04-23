@@ -101,6 +101,8 @@ public class Group extends Entity  {
 			copy.remove(copy.indexOf(member));
 		}
 		
+		//TODO add 
+		
 		return tempGames;
 	}
 
@@ -137,7 +139,7 @@ public class Group extends Entity  {
 		return this.games;
 	}
 	
-	private Ranking searchRankingByMember(GroupMember member,Collection<Ranking> set) {
+	private Ranking searchRankingByMember(Team member,Collection<Ranking> set) {
 		for(Ranking ranking:set) {
 			if(member.equals(ranking.getMember())) {
 				return ranking;
@@ -163,5 +165,10 @@ public class Group extends Entity  {
 		
 		
 		return rankings;
+	}
+
+	public Team getTeamAtRank(int rank) {
+		List<Ranking> rankings = this.calculateRanking();
+		return rankings.get(rank).getMember();
 	}
 }

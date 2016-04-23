@@ -1,6 +1,5 @@
 package org.b.v.tools.soccer.tournament.model;
 
-import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -8,8 +7,9 @@ import java.util.GregorianCalendar;
 import org.b.v.tools.soccer.tournament.extra.Entity;
 
 public class Game extends Entity {
-	private GroupMember home;
-	private GroupMember other;
+	private static final long serialVersionUID = 1L;
+	private Team home;
+	private Team other;
 	private int homeScore;
 	private int outScore;
 	private int homePenalties;
@@ -21,18 +21,18 @@ public class Game extends Entity {
 
 
 
-	public Game(GroupMember home,GroupMember out) {
+	public Game(Team home,Team out) {
 		this.home=home;
 		this.other=out;
 		this.homeScore=0;
 		this.outScore=0;
 	}
 	
-	public GroupMember getHome() {
+	public Team getHome() {
 		return home;
 	}
 
-	public GroupMember getOther() {
+	public Team getOther() {
 		return other;
 	}
 

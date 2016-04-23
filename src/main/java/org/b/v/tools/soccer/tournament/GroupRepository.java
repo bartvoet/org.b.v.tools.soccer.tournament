@@ -12,7 +12,6 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.b.v.tools.soccer.tournament.extra.Entity;
@@ -22,6 +21,7 @@ public class GroupRepository {
 	
 	private AtomicLong groupIds = new AtomicLong();
 	private List<Group> groups = new ArrayList<Group>(); 
+	
 	
 	public Group searchGroupByName(String name) {
 		for(Group group:groups) {

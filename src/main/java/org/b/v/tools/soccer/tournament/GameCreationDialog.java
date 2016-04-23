@@ -120,7 +120,7 @@ public class GameCreationDialog extends JDialog {
 							.onTime(parseTime((String)data[5]));
 					Boolean isFinished = (Boolean)data[6];
 					
-					if(isFinished.booleanValue()) {
+					if(isFinished != null && isFinished.booleanValue()) {
 						game.finishMatch();
 					}
 					return game;

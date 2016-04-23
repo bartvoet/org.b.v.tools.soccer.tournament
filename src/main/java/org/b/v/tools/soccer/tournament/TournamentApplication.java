@@ -2,17 +2,22 @@ package org.b.v.tools.soccer.tournament;
 
 
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -52,13 +57,40 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 		JMenu menu = new JMenu("Acties");
         menu.setMnemonic(KeyEvent.VK_A);
  
-        JMenuItem addGroups = new JMenuItem("Groepen beheren");
+        JMenuItem addGroups = new JMenuItem("Reeksen beheren");
         addGroups.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				groupDialog.prepareCleanScreen();
 				groupDialog.setVisible(true);
 			}
 		});
+        
+        JMenuItem addGroupVsGroup = new JMenuItem("Reeks tegen reeks");
+        addGroupVsGroup.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JDialog dialog = new JDialog();
+				dialog.setLayout(new FlowLayout());
+				dialog.setSize(new Dimension(600,300));
+				dialog.setVisible(true);
+				dialog.add(new JLabel("Reeks"));
+				dialog.add(new JComboBox());
+				dialog.add(new JLabel("Positie"));
+				dialog.add(new JTextField("   "));
+				dialog.add(new JLabel("tegen reeks"));
+				dialog.add(new JComboBox());
+				dialog.add(new JLabel("Positie"));
+				dialog.add(new JTextField("   "));
+			}
+		});
+        
+        JMenuItem addMatchVsMatch = new JMenuItem("Reeks tegen reeks");
+        addMatchVsMatch.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+			}
+        });
         
         JMenuItem addTerrain = new JMenuItem("Wedstrijden beheren");
         addTerrain.addActionListener(new ActionListener() {
@@ -70,6 +102,7 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
         
         menu.add(addGroups);
         menu.add(addTerrain);
+        menu.add(addGroupVsGroup);
         menuBar.add(menu);
 	}
 
