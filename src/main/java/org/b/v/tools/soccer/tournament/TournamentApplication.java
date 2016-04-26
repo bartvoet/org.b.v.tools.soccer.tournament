@@ -22,6 +22,7 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 
 	private final TournamentPanel newContentPane = new TournamentPanel();
 	private final GroupRepository gamesRepository = new GroupRepository();
+	private final CategoryDialog categoryDialog =new CategoryDialog(gamesRepository,this);
 	private final GroupDialog groupDialog=new GroupDialog(gamesRepository,this);
 	private final GameCreationDialog gameDialog=new GameCreationDialog(gamesRepository,this);
 	private final RankVsRankDialog rankVsRankDialog=new RankVsRankDialog(gamesRepository,this);
@@ -54,6 +55,15 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 		JMenu menu = new JMenu("Acties");
         menu.setMnemonic(KeyEvent.VK_A);
  
+        JMenuItem addCategory = new JMenuItem("Categorien beheren");
+        addCategory.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				categoryDialog.prepareCleanScreen();
+				categoryDialog.setVisible(true);
+			}
+        });
+        
         JMenuItem addGroups = new JMenuItem("Reeksen beheren");
         addGroups.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -71,15 +81,6 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 			}
 		});
 
-  
-        JMenuItem addMatchVsMatch = new JMenuItem("Match tegen match");
-        addMatchVsMatch.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-			}
-        });
-        
         JMenuItem addTerrain = new JMenuItem("Wedstrijden beheren");
         addTerrain.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -88,6 +89,7 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 			}
 		});
         
+        menu.add(addCategory);
         menu.add(addGroups);
         menu.add(addTerrain);
         menu.add(addGroupVsGroup);

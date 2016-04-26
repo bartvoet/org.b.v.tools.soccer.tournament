@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.b.v.tools.soccer.tournament.extra.Entity;
+import org.b.v.tools.soccer.tournament.model.Category;
 import org.b.v.tools.soccer.tournament.model.Game;
 import org.b.v.tools.soccer.tournament.model.Group;
 
@@ -23,6 +24,7 @@ public class GroupRepository {
 	private AtomicLong groupIds = new AtomicLong();
 	private List<Group> groups = new ArrayList<Group>(); 
 	private List<Game> nonGroupGames = new ArrayList<Game>();
+	private List<Category> categories = new ArrayList<Category>();
 	
 	public Group searchGroupByName(String name) {
 		for(Group group:groups) {
@@ -65,6 +67,7 @@ public class GroupRepository {
 			FileOutputStream fileOutput = new FileOutputStream(new File(name));
 			BufferedOutputStream buffer = new BufferedOutputStream(fileOutput);
 			ObjectOutputStream objects = new ObjectOutputStream(buffer);
+			objects.writeObject(categories);
 			objects.writeObject(this.groups);
 			objects.writeObject(this.groupIds);
 			objects.writeObject(this.nonGroupGames);
@@ -86,6 +89,7 @@ public class GroupRepository {
 			FileInputStream fileOutput = new FileInputStream(new File(name));
 			BufferedInputStream buffer = new BufferedInputStream(fileOutput);
 			ObjectInputStream objects = new ObjectInputStream(buffer);
+			this.categories = (List<Category>) objects.readObject();
 			this.groups = (List<Group>) objects.readObject();
 			this.groupIds = (AtomicLong) objects.readObject();
 			this.nonGroupGames = (List<Game>) objects.readObject();
@@ -110,7 +114,6 @@ public class GroupRepository {
 	}
 
 	public void updateNoGroupGame(Game entity) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -121,6 +124,21 @@ public class GroupRepository {
 			}
 		}
 		return null;
+	}
+
+	public Collection<Category> getAllCategories() {
+		return this.categories;
+	}
+
+	public void addCategory(String text) {
+		for(Category category:categories) {
+			if(category.name().equals(text)){
+				return;
+			}
+		}
+		Category category = new Category(text);
+		enrichWithId(category);
+		this.categories.add(category);
 	}
 
 

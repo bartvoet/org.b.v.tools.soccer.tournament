@@ -12,9 +12,11 @@ public class Group extends Entity  {
 	private String name;
 	private List<GroupMember> members = new ArrayList<GroupMember>();
 	private List<Game> games=new ArrayList<Game>();
+	private Category category;
 
-	public Group(String name) {
+	public Group(String name,Category category) {
 		this.name = name;
+		this.category = category;
 	}
 	
 	public String getName() {

@@ -39,7 +39,7 @@ public class GroupDialog extends JDialog {
 
 	private UpdateEvent event;
 	
-	private Group groupCurrentlyProcessing=new Group("");
+	private Group groupCurrentlyProcessing=new Group("",null);
 	
 	private EntityTableModel<GroupMember> data;
 	
@@ -217,7 +217,7 @@ public class GroupDialog extends JDialog {
 
 	public void prepareCleanScreen() {
 		name.setText("");
-		groupCurrentlyProcessing=new Group("");
+		groupCurrentlyProcessing=new Group("",null);
 		
 		combo.removeAllItems();
 		combo.addItem("-");
