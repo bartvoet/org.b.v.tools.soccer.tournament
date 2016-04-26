@@ -73,10 +73,17 @@ public class Game extends Entity {
 		this.time=time;
 		return this;
 	}
+	
+	public Game onTime(int hour,int second) {
+		this.time=new Date();
+		Calendar.getInstance().set(Calendar.HOUR_OF_DAY, hour);
+		Calendar.getInstance().set(Calendar.MINUTE, second);
+		return this;
+	}
 
-	private String extractHour(Date date) {
+	public String extractHour() {
 		Calendar calendar = GregorianCalendar.getInstance();
-		calendar.setTime(date);
+		calendar.setTime(getTime());
 		
 		int hour = calendar.get(Calendar.HOUR_OF_DAY);
 		
@@ -87,9 +94,9 @@ public class Game extends Entity {
 		return Integer.toString(hour);
 	}
 	
-	private String extractMinutes(Date date) {
+	public String extractMinutes() {
 		Calendar calendar = GregorianCalendar.getInstance();
-		calendar.setTime(date);
+		calendar.setTime(getTime());
 		
 		int minutes = calendar.get(Calendar.MINUTE);
 		if(minutes < 10) {
@@ -100,7 +107,7 @@ public class Game extends Entity {
 	}
 	
 	public String getTimeAsString() {
-		return extractHour(getTime()) + ":" + extractMinutes(getTime());
+		return extractHour() + ":" + extractMinutes();
 	}
 	
 	public void finishMatch() {
