@@ -10,7 +10,6 @@ import org.b.v.tools.soccer.tournament.extra.Entity;
 public class Group extends Entity  {
 
 	private String name;
-	//private long id;
 	private List<GroupMember> members = new ArrayList<GroupMember>();
 	private List<Game> games=new ArrayList<Game>();
 
@@ -30,21 +29,6 @@ public class Group extends Entity  {
 		GroupMember member = new GroupMember(name);
 		this.members.add(member);
 	}
-
-	/*
-	public int compareTo(Group o) {
-		return new Long(id).compareTo(new Long(o.id));
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if(obj instanceof Group) {
-			Group otherGroup = (Group)obj;
-			return this.id==otherGroup.id;
-		}
-		return false;
-	}
-	*/
 
 	public Collection<GroupMember> getMembers() {
 		return this.members;

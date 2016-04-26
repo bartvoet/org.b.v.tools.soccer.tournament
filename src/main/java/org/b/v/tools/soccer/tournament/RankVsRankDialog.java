@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -29,6 +30,10 @@ public class RankVsRankDialog extends JDialog {
 	private JButton add = new JButton("Voeg toe");
 	private JButton close = new JButton("Sluiten");
 	
+	private static Pattern rangePattern = Pattern.compile("\\s*(\\d+)\\s*-\\s*(\\d+)\\s*");
+	private static Pattern integerPattern = Pattern.compile("\\s*(\\d+)\\s*");
+	
+	
 	public RankVsRankDialog(GroupRepository gamesRepository, UpdateEvent updateEvent) {
 		event=updateEvent;
 		this.gamesRepository = gamesRepository;
@@ -39,19 +44,25 @@ public class RankVsRankDialog extends JDialog {
 		this.add(homeBox);
 		this.add(new JLabel("Positie"));
 		this.add(homeRank);
-		this.homeRank.setColumns(1);
+		this.homeRank.setColumns(3);
 		this.add(new JLabel("tegen reeks"));
 		this.add(outBox);
 		this.add(new JLabel("Positie"));
 		this.add(outRank);
-		this.outRank.setColumns(1);
+		this.outRank.setColumns(3);
 		
 		this.add.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				RankingMember home = new RankingMember((Group)homeBox.getSelectedItem(),homeRank());
-				RankingMember out = new RankingMember((Group)outBox.getSelectedItem(),outRank());
-				RankVsRankDialog.this.gamesRepository.addNoGroupGame(new Game(home,out));
+				
+				RankingRange homeRange = homeRank();
+				
+				for(int i=homeRange.from;i<=homeRange.to;i++) {
+					RankingMember home = new RankingMember((Group)homeBox.getSelectedItem(),i);
+					RankingMember out = new RankingMember((Group)outBox.getSelectedItem(),i);
+					RankVsRankDialog.this.gamesRepository.addNoGroupGame(new Game(home,out));
+				}
+				
 				RankVsRankDialog.this.event.registerUpdate();
 				RankVsRankDialog.this.setVisible(false);
 			}
@@ -64,18 +75,38 @@ public class RankVsRankDialog extends JDialog {
 			}
 		});
 
-		
-		
 		this.add(add);
 		this.add(close);
 	}
 	
-	public int homeRank() {
-		return Integer.parseInt(this.homeRank.getText());
+	private class RankingRange {
+		private int from,to;
+		public RankingRange(int from,int to) {
+			this.from=from;
+			this.to=to;
+		}
+		
+		public int from() {
+			return from;
+		}
+		
+		public int to() {
+			return to;
+		}
+	}
+	
+	
+	public RankingRange parseRank(JTextArea area) {
+		int rank = Integer.parseInt(area.getText());
+		return new RankingRange(rank,rank);
+	}
+	
+	public RankingRange homeRank() {
+		return parseRank(this.homeRank);
 	}
 
-	public int outRank() {
-		return Integer.parseInt(this.outRank.getText());
+	public RankingRange outRank() {
+		return parseRank(this.outRank);
 	}
 
 	
@@ -86,8 +117,6 @@ public class RankVsRankDialog extends JDialog {
 		for(Group group : this.gamesRepository.getAllGroups()) {
 			homeBox.addItem(group);
 			outBox.addItem(group);
-			//TODO: adding to ...
 		}
-		
 	}
 }

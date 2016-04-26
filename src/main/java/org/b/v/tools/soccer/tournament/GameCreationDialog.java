@@ -335,7 +335,6 @@ public class GameCreationDialog extends JDialog {
 						games.load(new GameEntityFilter());
 					}
 				} else {
-					System.out.println("here");
 					games.load(new GlobalGameEntityFilter());
 				}
 			}
