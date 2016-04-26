@@ -1,7 +1,10 @@
 package org.b.v.tools.soccer.tournament.model;
 
-public class RankingMember implements Team {
+import org.b.v.tools.soccer.tournament.extra.Entity;
 
+public class RankingMember extends Entity implements Team  {
+
+	private static final long serialVersionUID = 8938311908762090143L;
 	private Group group;
 	private int rank;
 

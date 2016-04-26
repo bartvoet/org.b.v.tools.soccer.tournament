@@ -44,6 +44,7 @@ public class RankVsRankDialog extends JDialog {
 				RankingMember home = new RankingMember((Group)outBox.getSelectedItem(),1);
 				RankingMember out = new RankingMember((Group)outBox.getSelectedItem(),1);
 				RankVsRankDialog.this.gamesRepository.addNoGroupGame(new Game(home,out));
+				RankVsRankDialog.this.event.registerUpdate();
 				RankVsRankDialog.this.setVisible(false);
 			}
 		});

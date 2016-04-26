@@ -67,6 +67,7 @@ public class GroupRepository {
 			ObjectOutputStream objects = new ObjectOutputStream(buffer);
 			objects.writeObject(this.groups);
 			objects.writeObject(this.groupIds);
+			objects.writeObject(this.nonGroupGames);
 			objects.flush();
 			objects.close();
 		} catch (FileNotFoundException e) {
@@ -87,6 +88,7 @@ public class GroupRepository {
 			ObjectInputStream objects = new ObjectInputStream(buffer);
 			this.groups = (List<Group>) objects.readObject();
 			this.groupIds = (AtomicLong) objects.readObject();
+			this.nonGroupGames = (List<Game>) objects.readObject();
 			objects.close();
 			
 		} catch (FileNotFoundException e) {
