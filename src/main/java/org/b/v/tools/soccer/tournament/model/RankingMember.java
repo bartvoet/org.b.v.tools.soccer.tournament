@@ -17,7 +17,7 @@ public class RankingMember implements Team {
 			return "/";
 		}
 		
-		return team.getTeamName();
+		return group.getName() + "(" + rank + ") "  + team.getTeamName();
 	}
 
 }

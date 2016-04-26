@@ -79,9 +79,17 @@ public class TournamentPanel extends JPanel {
 			this.group = group;
 			this.game = team;
 		}
+    	
+    	public Combination(Game game) {
+    		this.game=game;
+    	}
+
+		public String getGroupName(){
+    		return group==null?"":group.getName();
+    	}
     }
     
-	public <T> void refreshGames(Collection<Group> allGroups) {
+	public <T> void refreshGames(Collection<Group> allGroups,Collection<Game> nonGroupGames) {
 	   	int rowCount = gameModel.getRowCount();
     	for (int i = rowCount - 1; i >= 0; i--) {
     		gameModel.removeRow(i);
@@ -96,6 +104,10 @@ public class TournamentPanel extends JPanel {
     		}
     	}
     	
+    	for(Game team: nonGroupGames) {
+    		allMatches.add(new Combination(team));
+    	}
+    	
     	Collections.sort(allMatches, new Comparator<Combination>() {
     		public int compare(Combination o1, Combination o2) {
     			return o1.game.getTime().compareTo(o2.game.getTime());
@@ -106,7 +118,7 @@ public class TournamentPanel extends JPanel {
 			gameModel.addRow(new Object[]{
 									  team.game.getHome().getTeamName(),
 									  team.game.getOther().getTeamName(),
-									  team.group.getName(),
+									  team.getGroupName(),
 									  team.game.getField(),
 									  team.game.getTimeAsString(),
 									  team.game.getHomeScore() + " - " + team.game.getOutScore(),

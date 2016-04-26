@@ -29,6 +29,7 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 	private final GroupRepository gamesRepository = new GroupRepository();
 	private final GroupDialog groupDialog=new GroupDialog(gamesRepository,this);
 	private final GameCreationDialog gameDialog=new GameCreationDialog(gamesRepository,this);
+	private final RankVsRankDialog rankVsRankDialog=new RankVsRankDialog(gamesRepository,this);
 	
 		
 	public TournamentApplication() {
@@ -53,6 +54,7 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 		initializeTheHelpMenu(menuBar);
 	}
 
+	
 	private void initializeTheAdminstrationMenu(JMenuBar menuBar) {
 		JMenu menu = new JMenu("Acties");
         menu.setMnemonic(KeyEvent.VK_A);
@@ -69,22 +71,22 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
         addGroupVsGroup.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JDialog dialog = new JDialog();
-				dialog.setLayout(new FlowLayout());
-				dialog.setSize(new Dimension(600,300));
-				dialog.setVisible(true);
-				dialog.add(new JLabel("Reeks"));
-				dialog.add(new JComboBox());
-				dialog.add(new JLabel("Positie"));
-				dialog.add(new JTextField("   "));
-				dialog.add(new JLabel("tegen reeks"));
-				dialog.add(new JComboBox());
-				dialog.add(new JLabel("Positie"));
-				dialog.add(new JTextField("   "));
+				rankVsRankDialog.prepareCleanScreen();
+				rankVsRankDialog.setVisible(true);
 			}
 		});
+
+
+        JMenuItem addMatch = new JMenuItem("Voeg wedstrijd toe");
+        addMatch.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+			}
+        });
+
         
-        JMenuItem addMatchVsMatch = new JMenuItem("Reeks tegen reeks");
+        JMenuItem addMatchVsMatch = new JMenuItem("Match tegen match");
         addMatchVsMatch.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -102,6 +104,7 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
         
         menu.add(addGroups);
         menu.add(addTerrain);
+        menu.add(addMatch);
         menu.add(addGroupVsGroup);
         menuBar.add(menu);
 	}
@@ -198,7 +201,8 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 
 	private void refreshScreens() {
 		this.newContentPane.refreshGroups(gamesRepository.getAllGroups());
-		this.newContentPane.refreshGames(gamesRepository.getAllGroups());
+		this.newContentPane.refreshGames(gamesRepository.getAllGroups(),
+										 gamesRepository.getAllNonGroupGames());
 
 		updateTitleBarWithState();
 	}

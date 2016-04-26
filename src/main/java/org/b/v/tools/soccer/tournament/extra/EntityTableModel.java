@@ -8,8 +8,6 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
-import org.b.v.tools.soccer.tournament.model.Game;
-
 //extends or composite???
 //keep track of rows
 //when you save verify the rows that you don't track
@@ -111,6 +109,12 @@ public class EntityTableModel<T extends Entity>  {
 				// TODO Auto-generated method stub
 				
 			}
+
+			@Override
+			public T searchEntity(Long id) {
+				// TODO Auto-generated method stub
+				return null;
+			}
         };
 	}
 
@@ -157,16 +161,18 @@ public class EntityTableModel<T extends Entity>  {
 	}
 	
 	public void dump(EntityFilter<T> repository ) {
-		this.filter=repository;
+		//this.filter=repository;
 		
 		for(int row = 0;row < model.getRowCount();row++) {
 			Object[] data = getRowData(row);
 			if(data[data.length-1]==null) {
 				filter.saveNewEntity(mapper.map(data));
 			} else {
-				
-				T t = mapper.map(data);
-				t.setId((Long)data[data.length-1]);
+				Long id = (Long)data[data.length-1];
+				T t = filter.searchEntity(id);
+				mapper.map(t, data);
+//				T t = mapper.map(data);
+//				t.setId((Long)data[data.length-1]);
 				filter.updateEntity(t);
 			}
 		}

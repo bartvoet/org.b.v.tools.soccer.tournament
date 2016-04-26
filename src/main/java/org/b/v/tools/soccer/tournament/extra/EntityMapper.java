@@ -10,6 +10,8 @@ public interface EntityMapper<T> {
 	Object[] map(T entity);
 	
 	T map(Object[] data);
+	
+	T map(T entity,Object[] data);
 
 	Comparable<?> getId(T entity);
 

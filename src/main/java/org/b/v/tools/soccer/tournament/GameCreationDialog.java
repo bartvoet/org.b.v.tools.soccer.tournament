@@ -112,7 +112,8 @@ public class GameCreationDialog extends JDialog {
 				}
 				
 				public Game map(Object[] data) {
-					Game game = new Game(group.getMemberByName((String)data[0]),
+					Game game = new Game(
+									group.getMemberByName((String)data[0]),
 									group.getMemberByName((String)data[1]))
 							.withScores(parseFirstScore(data[2]), parseSecondScore(data[2]))
 							.withPenalties(parseFirstScore(data[3]), parseSecondScore(data[3]))
@@ -126,6 +127,23 @@ public class GameCreationDialog extends JDialog {
 					return game;
 				}
 				
+				@Override
+				public Game map(Game entity, Object[] data) {
+					entity
+						.withScores(parseFirstScore(data[2]), parseSecondScore(data[2]))
+						.withPenalties(parseFirstScore(data[3]), parseSecondScore(data[3]))
+						.atField((String)data[4])
+						.onTime(parseTime((String)data[5]));
+					
+					
+					Boolean isFinished = (Boolean)data[6];
+					
+					if(isFinished != null && isFinished.booleanValue()) {
+						entity.finishMatch();
+					}
+					return entity;
+				}
+
 				private Date parseTime(String string) {
 					Matcher matcher = timePattern.matcher(string);
 					if(matcher.matches()) {
@@ -175,6 +193,7 @@ public class GameCreationDialog extends JDialog {
 					}
 					return false;
 				}
+
 			};	
 
 	
@@ -230,8 +249,38 @@ public class GameCreationDialog extends JDialog {
 		public void updateEntity(Game entity) {
 			group.updateGame(entity);
 		}
+
+		@Override
+		public Game searchEntity(Long id) {
+			return group.getGameById(id);
+		}
 		
 	}
+	
+	private class GlobalGameEntityFilter implements EntityFilter<Game>{
+
+		public Collection<Game> getEntities() {
+			return gamesRepository.getAllNonGroupGames();
+		}
+
+		public void saveNewEntity(Game entity) {
+			gamesRepository.enrichWithId(entity);
+			gamesRepository.addNoGroupGame(entity);
+		}
+
+		public void removeExistingEntity(Game entity) {
+			gamesRepository.removeNoGroupGame(entity);
+		}
+
+		public void updateEntity(Game entity) {
+			gamesRepository.updateNoGroupGame(entity);
+		}
+
+		public Game searchEntity(Long id) {
+			return gamesRepository.searchGameById(id);
+		}
+		
+	} 
 	
 	
 	private void initializeButtonActions() {
@@ -275,11 +324,19 @@ public class GameCreationDialog extends JDialog {
 		combo.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				String name = (String) combo.getSelectedItem();
+				
+				if("-".equals(name)) {
+					games.load(new GlobalGameEntityFilter());
+				}
+				
 				if(name!=null) {
 					group = gamesRepository.searchGroupByName(name);
 					if(group!=null) {
 						games.load(new GameEntityFilter());
 					}
+				} else {
+					System.out.println("here");
+					games.load(new GlobalGameEntityFilter());
 				}
 			}
 		});

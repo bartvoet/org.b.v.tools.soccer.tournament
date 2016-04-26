@@ -169,6 +169,30 @@ public class Group extends Entity  {
 
 	public Team getTeamAtRank(int rank) {
 		List<Ranking> rankings = this.calculateRanking();
-		return rankings.get(rank).getMember();
+		return rankings.get(rank - 1).getMember();
+	}
+	
+	@Override
+	public String toString() {
+		return this.getName();
+	}
+
+	public GroupMember getMemberById(Long id2) {
+		for(GroupMember member : members) {
+			if(member.getId().equals(id2)) {
+				return member;
+			}
+		}
+		return null;
+		
+	}
+
+	public Game getGameById(Long id2) {
+		for(Game game : games) {
+			if(game.getId().equals(id2)) {
+				return game;
+			}
+		}
+		return null;
 	}
 }

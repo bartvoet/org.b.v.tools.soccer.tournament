@@ -15,13 +15,14 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.b.v.tools.soccer.tournament.extra.Entity;
+import org.b.v.tools.soccer.tournament.model.Game;
 import org.b.v.tools.soccer.tournament.model.Group;
 
 public class GroupRepository {
 	
 	private AtomicLong groupIds = new AtomicLong();
 	private List<Group> groups = new ArrayList<Group>(); 
-	
+	private List<Game> nonGroupGames = new ArrayList<Game>();
 	
 	public Group searchGroupByName(String name) {
 		for(Group group:groups) {
@@ -42,9 +43,21 @@ public class GroupRepository {
 			this.groups.add(group);
 		}
 	}
+	
+	public void addNoGroupGame(Game game) {
+		if(!game.containsId()) {
+			enrichWithId(game);
+		}
+		this.nonGroupGames.add(game);
+	}
 
-	public void enrichWithId(Entity entity) {
+	public Entity enrichWithId(Entity entity) {
 		entity.setId(groupIds.getAndIncrement());
+		return entity;
+	}
+	
+	public Collection<Game> getAllNonGroupGames() {
+		return this.nonGroupGames;
 	}
 
 	public void persist(String name) {
@@ -87,6 +100,25 @@ public class GroupRepository {
 			e.printStackTrace();
 		}
 		
+	}
+
+	public void removeNoGroupGame(Game entity) {
+		this.nonGroupGames.remove(entity);
+		
+	}
+
+	public void updateNoGroupGame(Game entity) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public Game searchGameById(Long id) {
+		for(Game game:this.nonGroupGames) {
+			if(game.getId().equals(id)) {
+				return game;
+			}
+		}
+		return null;
 	}
 
 

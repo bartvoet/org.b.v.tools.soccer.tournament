@@ -88,6 +88,10 @@ public class GroupDialog extends JDialog {
 			public void updateEntity(GroupMember entity) {
 				groupCurrentlyProcessing.updateMember(entity);
 			}
+
+			public GroupMember searchEntity(Long id) {
+				return groupCurrentlyProcessing.getMemberById(id);
+			}
 		};
 	
 	private EntityMapper<GroupMember> groupMemberMapper =
@@ -112,6 +116,11 @@ public class GroupDialog extends JDialog {
 				return new GroupMember((String)data[0]);
 			}
 
+			@Override
+			public GroupMember map(GroupMember entity, Object[] data) {
+				return entity;
+			}
+
 			public Comparable<?> getId(GroupMember entity) {
 				return new Long(entity.getId());
 			}
@@ -127,6 +136,7 @@ public class GroupDialog extends JDialog {
 				}
 				return false;
 			}
+
 		};	
 		
 	
