@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.JButton;
@@ -57,7 +58,7 @@ public class RankVsRankDialog extends JDialog {
 				
 				RankingRange homeRange = homeRank();
 				
-				for(int i=homeRange.from;i<=homeRange.to;i++) {
+				for(int i=homeRange.from();i<=homeRange.to();i++) {
 					RankingMember home = new RankingMember((Group)homeBox.getSelectedItem(),i);
 					RankingMember out = new RankingMember((Group)outBox.getSelectedItem(),i);
 					RankVsRankDialog.this.gamesRepository.addNoGroupGame(new Game(home,out));
@@ -93,10 +94,24 @@ public class RankVsRankDialog extends JDialog {
 		public int to() {
 			return to;
 		}
+		
+		public int numberOfTeams() {
+			return this.to-from;
+		}
+		
+		public boolean isSameLevel(RankingRange other) {
+			return numberOfTeams() == other.numberOfTeams();
+		}
 	}
 	
 	
 	public RankingRange parseRank(JTextArea area) {
+		Matcher range = rangePattern.matcher(area.getText());
+		
+		if(range.matches()) {
+			return new RankingRange(Integer.parseInt(range.group(1)),Integer.parseInt(range.group(2)));
+		}
+		
 		int rank = Integer.parseInt(area.getText());
 		return new RankingRange(rank,rank);
 	}
