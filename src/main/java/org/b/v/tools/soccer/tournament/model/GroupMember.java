@@ -13,4 +13,10 @@ public class GroupMember extends Entity implements Team {
 	public String getTeamName() {
 		return teamName;
 	}
+
+	public String getRepresentation() {
+		return this.getId().toString();
+	}
+	
+	
 }

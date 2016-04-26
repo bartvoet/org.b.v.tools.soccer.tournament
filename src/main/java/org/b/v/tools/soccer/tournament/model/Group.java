@@ -14,9 +14,8 @@ public class Group extends Entity  {
 	private List<Game> games=new ArrayList<Game>();
 	private Category category;
 
-	public Group(String name,Category category) {
+	public Group(String name) {
 		this.name = name;
-		this.category = category;
 	}
 	
 	public String getName() {
@@ -192,8 +191,19 @@ public class Group extends Entity  {
 		return this.category;
 	}
 
-	public void setCategory(Category category) {
-		this.category=category;
+	public void setCategory(Category newCategory) {
+		if(this.category != null) {
+			if(!this.category.equals(category)) {
+				this.category.removeGroup(this);
+				this.category = newCategory;
+				this.category.addGroup(this);
+			}
+		} else {
+			if(newCategory != null) {
+				this.category = newCategory;
+				this.category.addGroup(this);
+			}
+		}
 	}
 	
 }

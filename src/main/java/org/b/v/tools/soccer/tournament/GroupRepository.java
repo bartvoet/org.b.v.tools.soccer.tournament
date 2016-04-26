@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -18,6 +19,7 @@ import org.b.v.tools.soccer.tournament.extra.Entity;
 import org.b.v.tools.soccer.tournament.model.Category;
 import org.b.v.tools.soccer.tournament.model.Game;
 import org.b.v.tools.soccer.tournament.model.Group;
+import org.b.v.tools.soccer.tournament.model.GroupMember;
 
 public class GroupRepository {
 	
@@ -55,7 +57,7 @@ public class GroupRepository {
 	}
 
 	public Entity enrichWithId(Entity entity) {
-		entity.setId(groupIds.getAndIncrement());
+		entity.setId(groupIds.incrementAndGet());
 		return entity;
 	}
 	
@@ -63,6 +65,53 @@ public class GroupRepository {
 		return this.nonGroupGames;
 	}
 
+	public void writeGame(PrintWriter writer,Game game) {
+		writer.println(game.getId() + "," + "GAME" + "," 
+				+ game.getHome().getRepresentation() + "," 
+				+ game.getOther().getRepresentation()+ "," 
+				+ game.getHomeScore() + "," + game.getOutScore() + "," 
+				+ game.getField()  + "," 
+				+ game.getTimeAsString() + ","
+				+ game.isFinished() + ","
+				);
+	}
+
+	public void writeCsv(String name) {
+		try {
+			FileOutputStream fileOutput = new FileOutputStream(new File(name));
+			BufferedOutputStream buffer = new BufferedOutputStream(fileOutput);
+			PrintWriter writer = new PrintWriter(buffer);
+			
+			for(Category category : this.categories) {
+				writer.println(category.getId() + "," + "CATEGORY" + "," + category.name() + ",");
+				for(Group group : category.getGroups()) {
+					writer.println(group.getId() + "," + "GROUP" + "," + group.getName() + ",");
+					for(GroupMember member : group.getMembers()) {
+						writer.println(member.getId() + "," + "TEAM" + "," + member.getTeamName() + ",");
+					}
+					for(Game game : group.getGames()) {
+						writeGame(writer,game);
+					}
+				}
+			}
+			
+			for(Game game : this.nonGroupGames) {
+				writeGame(writer,game);
+			}
+			
+			writer.flush();
+			writer.close();
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 	public void persist(String name) {
 		try {
 			FileOutputStream fileOutput = new FileOutputStream(new File(name));
@@ -82,6 +131,7 @@ public class GroupRepository {
 			e.printStackTrace();
 		}
 		
+		//writeCsv("/home/bart/test.csv");
 		
 	}
 

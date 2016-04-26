@@ -24,5 +24,9 @@ public class RankingMember extends Entity implements Team  {
 				+ "(" + rank + ") "  
 				+  (group.isFinished()?team.getTeamName():"?");
 	}
+	
+	public String getRepresentation() {
+		return "GROUPRANK(" + group.getId() + "-" + rank + ")";
+	}
 
 }

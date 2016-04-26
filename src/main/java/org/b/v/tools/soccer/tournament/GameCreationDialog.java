@@ -342,7 +342,7 @@ public class GameCreationDialog extends JDialog {
 	}
 
 	public void prepareCleanScreen() {
-		group = new Group("",null);
+		group = new Group("");
 		
 		combo.removeAllItems();
 		combo.addItem("-");
