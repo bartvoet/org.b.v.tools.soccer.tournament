@@ -15,4 +15,9 @@ public class Category extends Entity {
 		return this.name;
 	}
 
+	@Override
+	public String toString() {
+		return this.name;
+	}
+	
 }

@@ -187,5 +187,13 @@ public class Group extends Entity  {
 		}
 		return true;
 	}
+
+	public Category getCategory() {
+		return this.category;
+	}
+
+	public void setCategory(Category category) {
+		this.category=category;
+	}
 	
 }

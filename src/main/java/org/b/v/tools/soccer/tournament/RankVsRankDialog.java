@@ -12,7 +12,6 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 
 import org.b.v.tools.soccer.tournament.model.Game;
 import org.b.v.tools.soccer.tournament.model.Group;
@@ -93,14 +92,6 @@ public class RankVsRankDialog extends JDialog {
 		
 		public int to() {
 			return to;
-		}
-		
-		public int numberOfTeams() {
-			return this.to-from;
-		}
-		
-		public boolean isSameLevel(RankingRange other) {
-			return numberOfTeams() == other.numberOfTeams();
 		}
 	}
 	

@@ -21,10 +21,11 @@ import org.b.v.tools.soccer.tournament.model.Group;
 
 public class GroupRepository {
 	
+	private List<Category> categories = new ArrayList<Category>();
 	private AtomicLong groupIds = new AtomicLong();
 	private List<Group> groups = new ArrayList<Group>(); 
 	private List<Game> nonGroupGames = new ArrayList<Game>();
-	private List<Category> categories = new ArrayList<Category>();
+	
 	
 	public Group searchGroupByName(String name) {
 		for(Group group:groups) {

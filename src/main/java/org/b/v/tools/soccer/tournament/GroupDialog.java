@@ -18,6 +18,7 @@ import javax.swing.JTextField;
 import org.b.v.tools.soccer.tournament.extra.EntityFilter;
 import org.b.v.tools.soccer.tournament.extra.EntityMapper;
 import org.b.v.tools.soccer.tournament.extra.EntityTableModel;
+import org.b.v.tools.soccer.tournament.model.Category;
 import org.b.v.tools.soccer.tournament.model.Group;
 import org.b.v.tools.soccer.tournament.model.GroupMember;
 
@@ -27,6 +28,7 @@ public class GroupDialog extends JDialog {
 	
 	private JTextField name = new JTextField();
 	private JComboBox<String> combo = new JComboBox<String>();
+	private JComboBox<Category> categories = new JComboBox<Category>();
 
 	private JButton addButton;
 	private JButton deleteButton;
@@ -63,8 +65,10 @@ public class GroupDialog extends JDialog {
         name.setSize(new Dimension(10,10));
         
         infoPanel.add(new JLabel("Naam groep"));
+        infoPanel.add(categories);
         infoPanel.add(name);
         infoPanel.add(combo);
+        
         add(infoPanel,BorderLayout.NORTH);
 	}
 
@@ -195,6 +199,7 @@ public class GroupDialog extends JDialog {
 		saveAndExitButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				groupCurrentlyProcessing.changeName(name.getText());
+				groupCurrentlyProcessing.setCategory((Category)categories.getSelectedItem());
 				gamesRepository.createOrSaveGroup(groupCurrentlyProcessing);
 				data.dump(filter);
 				
@@ -209,7 +214,12 @@ public class GroupDialog extends JDialog {
 				if(name!=null & !"-".equals(name)) {
 					GroupDialog.this.name.setText(name);
 					groupCurrentlyProcessing = gamesRepository.searchGroupByName(name);
+					categories.setSelectedItem(groupCurrentlyProcessing.getCategory());
+					
 			    	data.load(filter);
+				} else {
+					data.clean();
+					categories.removeAllItems();
 				}
 			}
 		});
@@ -225,6 +235,11 @@ public class GroupDialog extends JDialog {
 			combo.addItem(group.getName());
 		}
 		
+		categories.removeAllItems();
+		for(Category category:gamesRepository.getAllCategories()) {
+			categories.addItem(category);
+		}
+				
 		data.clean();
 	}
 }
