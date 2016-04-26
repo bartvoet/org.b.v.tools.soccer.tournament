@@ -10,7 +10,7 @@ import org.b.v.tools.soccer.tournament.extra.Entity;
 public class Group extends Entity  {
 
 	private String name;
-	private long id;
+	//private long id;
 	private List<GroupMember> members = new ArrayList<GroupMember>();
 	private List<Game> games=new ArrayList<Game>();
 
@@ -18,11 +18,6 @@ public class Group extends Entity  {
 		this.name = name;
 	}
 	
-	public Group(long id,String name) {
-		this.id=id;
-		this.name=name;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -36,6 +31,7 @@ public class Group extends Entity  {
 		this.members.add(member);
 	}
 
+	/*
 	public int compareTo(Group o) {
 		return new Long(id).compareTo(new Long(o.id));
 	}
@@ -48,6 +44,7 @@ public class Group extends Entity  {
 		}
 		return false;
 	}
+	*/
 
 	public Collection<GroupMember> getMembers() {
 		return this.members;

@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import org.b.v.tools.soccer.tournament.model.Game;
@@ -21,6 +22,10 @@ public class RankVsRankDialog extends JDialog {
 	private GroupRepository gamesRepository;
 	private JComboBox<Group> homeBox = new JComboBox<Group>();
 	private JComboBox<Group> outBox = new JComboBox<Group>();
+	
+	private JTextArea homeRank=new JTextArea();
+	private JTextArea outRank=new JTextArea();
+	
 	private JButton add = new JButton("Voeg toe");
 	private JButton close = new JButton("Sluiten");
 	
@@ -33,16 +38,19 @@ public class RankVsRankDialog extends JDialog {
 		this.add(new JLabel("Reeks"));
 		this.add(homeBox);
 		this.add(new JLabel("Positie"));
-		this.add(new JTextField("   "));
+		this.add(homeRank);
+		this.homeRank.setColumns(1);
 		this.add(new JLabel("tegen reeks"));
 		this.add(outBox);
 		this.add(new JLabel("Positie"));
-		this.add(new JTextField("   "));
+		this.add(outRank);
+		this.outRank.setColumns(1);
+		
 		this.add.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				RankingMember home = new RankingMember((Group)outBox.getSelectedItem(),1);
-				RankingMember out = new RankingMember((Group)outBox.getSelectedItem(),1);
+				RankingMember home = new RankingMember((Group)homeBox.getSelectedItem(),homeRank());
+				RankingMember out = new RankingMember((Group)outBox.getSelectedItem(),outRank());
 				RankVsRankDialog.this.gamesRepository.addNoGroupGame(new Game(home,out));
 				RankVsRankDialog.this.event.registerUpdate();
 				RankVsRankDialog.this.setVisible(false);
@@ -61,7 +69,16 @@ public class RankVsRankDialog extends JDialog {
 		this.add(add);
 		this.add(close);
 	}
+	
+	public int homeRank() {
+		return Integer.parseInt(this.homeRank.getText());
+	}
 
+	public int outRank() {
+		return Integer.parseInt(this.outRank.getText());
+	}
+
+	
 	public void prepareCleanScreen() {
 		homeBox.removeAllItems();
 		outBox.removeAllItems();
