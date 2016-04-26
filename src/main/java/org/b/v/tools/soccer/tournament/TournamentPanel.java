@@ -85,7 +85,7 @@ public class TournamentPanel extends JPanel {
     	}
 
 		public String getGroupName(){
-    		return group==null?"":group.getName();
+    		return group==null?"":group.getCategory().name() + " " + group.getName();
     	}
     }
     
