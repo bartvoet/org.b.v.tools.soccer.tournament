@@ -156,7 +156,7 @@ public class Group extends Entity  {
 	
 	@Override
 	public String toString() {
-		return this.getName();
+		return this.getCategory()==null?"":this.getCategory().name() +  this.getName();
 	}
 
 	public GroupMember getMemberById(Long id2) {

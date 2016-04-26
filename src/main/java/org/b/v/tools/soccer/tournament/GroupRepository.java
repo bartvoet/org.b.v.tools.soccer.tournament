@@ -32,10 +32,15 @@ public class GroupRepository {
 	private List<Game> nonGroupGames = new ArrayList<Game>();
 	
 	
-	public Group searchGroupByName(String name) {
-		for(Group group:groups) {
-			if(name.equals(group.getName())){
-				return group;
+	public Group searchGroupByName(String categoryName,String name) {
+		
+		for(Category category:categories) {
+			if(category.name().equals(categoryName)) {
+				for(Group group:category.getGroups()) {
+					if(name.equals(group.getName())){
+						return group;
+					}
+				}
 			}
 		}
 		return null;

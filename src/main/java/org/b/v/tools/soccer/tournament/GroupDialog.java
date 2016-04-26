@@ -211,9 +211,13 @@ public class GroupDialog extends JDialog {
 		combo.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				String name = (String) combo.getSelectedItem();
-				if(name!=null & !"-".equals(name)) {
-					GroupDialog.this.name.setText(name);
-					groupCurrentlyProcessing = gamesRepository.searchGroupByName(name);
+				if(name!=null && !"-".equals(name)) {
+					String[] split = name.split(":");
+					String category = split[0];
+					String group = split[1];
+					
+					GroupDialog.this.name.setText(group);
+					groupCurrentlyProcessing = gamesRepository.searchGroupByName(category,group);
 					categories.setSelectedItem(groupCurrentlyProcessing.getCategory());
 					
 			    	data.load(filter);
@@ -232,7 +236,7 @@ public class GroupDialog extends JDialog {
 		combo.removeAllItems();
 		combo.addItem("-");
 		for(Group group : gamesRepository.getAllGroups()) {
-			combo.addItem(group.getName());
+			combo.addItem(group.getCategory().name() + ":" + group.getName());
 		}
 		
 		categories.removeAllItems();

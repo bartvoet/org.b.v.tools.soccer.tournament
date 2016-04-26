@@ -288,7 +288,12 @@ public class GameCreationDialog extends JDialog {
 		generateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String name = (String)combo.getSelectedItem();
-				group = gamesRepository.searchGroupByName(name);
+				
+				String[] split = name.split(":");
+				String category = split[0];
+				String groupName = split[1];
+				
+				group = gamesRepository.searchGroupByName(category,groupName);
 				games.add(group.generateCandidateGames(name),new GameEntityFilter());
 			}
 		});
@@ -327,10 +332,12 @@ public class GameCreationDialog extends JDialog {
 				
 				if("-".equals(name)) {
 					games.load(new GlobalGameEntityFilter());
-				}
-				
-				if(name!=null) {
-					group = gamesRepository.searchGroupByName(name);
+				} else if(name!=null) {
+					String[] split = name.split(":");
+					String category = split[0];
+					String groupName = split[1];
+					
+					group = gamesRepository.searchGroupByName(category,groupName);
 					if(group!=null) {
 						games.load(new GameEntityFilter());
 					}
