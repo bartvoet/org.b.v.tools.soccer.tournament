@@ -176,4 +176,14 @@ public class Group extends Entity  {
 		}
 		return null;
 	}
+	
+	public boolean isFinished() {
+		for(Game game:games) {
+			if(!game.isFinished()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 }
