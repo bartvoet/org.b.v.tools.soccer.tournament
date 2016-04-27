@@ -33,7 +33,6 @@ public class GroupRepository {
 	
 	
 	public Group searchGroupByName(String categoryName,String name) {
-		
 		for(Category category:categories) {
 			if(category.name().equals(categoryName)) {
 				for(Group group:category.getGroups()) {
@@ -130,21 +129,12 @@ public class GroupRepository {
 			Category category=null;
 			Group group=null;
 			
-			//todo detect max id, overwrite collections
+			cleanUpState();
 			
-			this.categories=new ArrayList<Category>();
-			this.groups=new ArrayList<Group>();
-			this.nonGroupGames=new ArrayList<Game>();
-			
-			long maxId = 0;
-			this.groupIds.set(0l);
-					
 			while((line = reader.readLine()) != null){
 				String[] tokens = line.split(",");
 				String type = tokens[0];
 				String entityName = tokens[1];
-				
-				//maxId=Long.max(maxId, getLong(tokens,0));
 				
 				if("CATEGORY".equals(type)) {
 					category = new Category(entityName);
@@ -183,8 +173,6 @@ public class GroupRepository {
 				}
 			}
 			reader.close();
-			this.groupIds.set(maxId);
-			
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -192,6 +180,13 @@ public class GroupRepository {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
+	}
+
+	private void cleanUpState() {
+		this.categories=new ArrayList<Category>();
+		this.groups=new ArrayList<Group>();
+		this.nonGroupGames=new ArrayList<Game>();
+		this.groupIds.set(0l);
 	}
 
 	private static Pattern rankingMemberPattern = Pattern.compile("(.+)-(.+)-(\\d+)");
