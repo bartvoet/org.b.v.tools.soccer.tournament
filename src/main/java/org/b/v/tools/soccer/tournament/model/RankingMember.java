@@ -20,7 +20,8 @@ public class RankingMember extends Entity implements Team  {
 			return "/";
 		}
 		
-		return group.getName() 
+		return group.getCategory().name() + " "
+				+ group.getName() 
 				+ "(" + rank + ") "  
 				+  (group.isFinished()?team.getTeamName():"?");
 	}
