@@ -225,6 +225,29 @@ public class EntityTableModel<T extends Entity>  {
 //		}
 		
 	}
+	
+	public List<T> getMarkedEntities() {
+		List<Integer> markedRows = new ArrayList<Integer>();
+		List<T> selectedEntities = new ArrayList<T>();
+		for(int row = 0;row < model.getRowCount();row++) {
+			Boolean b = mapper.isMarkedToBeDeleted(getRowData(row));
+			if(b!=null && b.booleanValue()) {markedRows.add(row);}
+		}
+		for(int i : markedRows) {
+			Object[] data = getRowData(i);
+			if(data[data.length-1]!=null) {
+				T entity = filter.searchEntity((Long)data[data.length-1]);
+				mapper.map(entity,data);
+				selectedEntities.add(entity);
+			} else {
+				T entity = mapper.map(data);
+				selectedEntities.add(entity);
+			}
+		}
+		
+		return selectedEntities;
+		
+	}
 
 	public void clean() {
 		int rowCount = model.getRowCount();

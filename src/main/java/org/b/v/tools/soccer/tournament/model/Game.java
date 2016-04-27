@@ -28,6 +28,21 @@ public class Game extends Entity {
 		this.outScore=0;
 	}
 	
+	public void swithHomeAndOut() {
+		Team temp = home;
+		this.home = other;
+		this.other = temp;
+		
+		int tempScore = this.homeScore;
+		this.homeScore = this.outScore;
+		this.outScore=tempScore;
+		
+		int tempPenalties = this.homePenalties;
+		this.homePenalties = this.outPenalties;
+		this.outPenalties = tempPenalties;
+		
+	}
+	
 	public Team getHome() {
 		return home;
 	}

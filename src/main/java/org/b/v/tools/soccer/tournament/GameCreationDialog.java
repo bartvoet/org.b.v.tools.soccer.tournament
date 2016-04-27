@@ -7,10 +7,8 @@ import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,7 +20,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import org.b.v.tools.soccer.tournament.extra.Entity;
 import org.b.v.tools.soccer.tournament.extra.EntityFilter;
 import org.b.v.tools.soccer.tournament.extra.EntityMapper;
 import org.b.v.tools.soccer.tournament.extra.EntityTableModel;
@@ -50,6 +47,8 @@ public class GameCreationDialog extends JDialog {
 	private JButton saveAndExitButon;
 	
 	private JButton removeButton;
+	
+	private JButton switchButton;
 	
 	
 	
@@ -187,9 +186,9 @@ public class GameCreationDialog extends JDialog {
 				}
 				
 				public boolean isMarkedToBeDeleted(Object[] data) {
-					Object bool = data[5];
+					Object bool = data[7];
 					if(bool!=null) {
-						return (Boolean)data[5];
+						return (Boolean)data[7];
 					}
 					return false;
 				}
@@ -221,12 +220,14 @@ public class GameCreationDialog extends JDialog {
         saveAndExitButon = new JButton("OK");
         cancelButton = new JButton("Cancel");
         removeButton = new JButton("Verwijderen");
+        switchButton = new JButton("Wisselen");
         
         buttonPanel.add(generateButton);
         buttonPanel.add(addButton);
         buttonPanel.add(removeButton);
         buttonPanel.add(saveAndExitButon);
         buttonPanel.add(cancelButton);
+        buttonPanel.add(switchButton);
         
         add(buttonPanel,BorderLayout.SOUTH);
 	}
@@ -321,6 +322,17 @@ public class GameCreationDialog extends JDialog {
 				
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				GameCreationDialog.this.setVisible(false);
+			}
+		});
+		
+		switchButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Collection<Game> markedGames = games.getMarkedEntities();
+				for(Game game:markedGames) {
+					game.swithHomeAndOut();
+				}
+				event.registerUpdate();
 				GameCreationDialog.this.setVisible(false);
 			}
 		});
