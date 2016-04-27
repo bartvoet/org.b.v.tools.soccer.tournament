@@ -27,7 +27,7 @@ public class RankingMember extends Entity implements Team  {
 	}
 	
 	public String getRepresentation() {
-		return "GR(" + group.getId() + "-" + rank + ")";
+		return group.getCategory().name() + "-" +  group.getName() + "-" + rank;
 	}
 
 }

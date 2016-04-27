@@ -193,24 +193,26 @@ public class GroupRepository {
 		} 
 	}
 
-	private static Pattern scorePattern = Pattern.compile("GR\\((\\d+)-(\\d+)\\)");
+	private static Pattern rankingMemberPattern = Pattern.compile("(.+)-(.+)-(\\d+)");
 	
 	private Team searchOtherTeam(String[] tokens) {
-		Matcher matcher = scorePattern.matcher(tokens[3]);
+		Matcher matcher = rankingMemberPattern.matcher(tokens[3]);
 		if(matcher.matches()) {
-			long id = Long.parseLong(matcher.group(1));
-			int rank = Integer.parseInt(matcher.group(2));
-			return new RankingMember(this.searchGroupById(id), rank);
+			String category = matcher.group(1);
+			String group = matcher.group(2);
+			int rank = Integer.parseInt(matcher.group(3));
+			return new RankingMember(this.searchGroupByName(category,group), rank);
 		}
 		return null;
 	}
 
 	private Team searchHomeTeam(String[] tokens) {
-		Matcher matcher = scorePattern.matcher(tokens[2]);
+		Matcher matcher = rankingMemberPattern.matcher(tokens[2]);
 		if(matcher.matches()) {
-			long id = Long.parseLong(matcher.group(1));
-			int rank = Integer.parseInt(matcher.group(2));
-			return new RankingMember(this.searchGroupById(id), rank);
+			String category = matcher.group(1);
+			String group = matcher.group(2);
+			int rank = Integer.parseInt(matcher.group(3));
+			return new RankingMember(this.searchGroupByName(category,group), rank);
 		}
 		return null;
 	}
