@@ -126,6 +126,7 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 				refreshScreens();
 			}
 		});
+        openTournament.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
         
         saveTournamentAs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
