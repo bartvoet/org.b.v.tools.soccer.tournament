@@ -83,7 +83,7 @@ public class GroupRepository {
 	}
 
 	public void writeGame(PrintWriter writer,Game game,String suffix) {
-		writer.println(game.getId() + "," + suffix + "," 
+		writer.println( suffix + "," 
 				+ game.getHome().getRepresentation() + "," 
 				+ game.getOther().getRepresentation()+ "," 
 				+ game.getHomeScore() + "," + game.getOutScore() + "," 
@@ -94,28 +94,29 @@ public class GroupRepository {
 				);
 	}
 	
-	private Long getLong(String[] tokens,int index) {
-		return Long.parseLong(tokens[index]);
-	}
+//	private Long getLong(String[] tokens,int index) {
+//		return Long.parseLong(tokens[index]);
+//	}
 	
 	private int getInt(String[] tokens,int index) {
 		return Integer.parseInt(tokens[index]);
 	}
 	
 	private void setEntity(Entity entity,String[] tokens) {
-		entity.setId(getLong(tokens,0));
+		//entity.setId(getLong(tokens,0));
+		entity.setId(groupIds.incrementAndGet());
 	}
 
 	private void populateGame(Game game,String[] tokens) {
 		game
-		.withScores(getInt(tokens,4), getInt(tokens,5))
-		.withPenalties(getInt(tokens,6), getInt(tokens,7))
-		.atField(tokens[8])
-		.onTime(getInt(tokens,9),getInt(tokens,10));
+		.withScores(getInt(tokens,3), getInt(tokens,4))
+		.withPenalties(getInt(tokens,5), getInt(tokens,6))
+		.atField(tokens[7])
+		.onTime(getInt(tokens,8),getInt(tokens,9));
 
 		setEntity(game,tokens);
 		
-		if("true".equals(tokens[11])) {
+		if("true".equals(tokens[10])) {
 			game.finishMatch();
 		}
 	}
@@ -136,14 +137,14 @@ public class GroupRepository {
 			this.nonGroupGames=new ArrayList<Game>();
 			
 			long maxId = 0;
-			
+			this.groupIds.set(0l);
 					
 			while((line = reader.readLine()) != null){
 				String[] tokens = line.split(",");
-				String type = tokens[1];
-				String entityName = tokens[2];
+				String type = tokens[0];
+				String entityName = tokens[1];
 				
-				maxId=Long.max(maxId, getLong(tokens,0));
+				//maxId=Long.max(maxId, getLong(tokens,0));
 				
 				if("CATEGORY".equals(type)) {
 					category = new Category(entityName);
@@ -165,8 +166,8 @@ public class GroupRepository {
 				}
 
 				if("GAME".equals(type)) {
-					Game game = new Game(group.getMemberByName(tokens[2]),
-										group.getMemberByName(tokens[3]));
+					Game game = new Game(group.getMemberByName(tokens[1]),
+										group.getMemberByName(tokens[2]));
 					
 					populateGame(game,tokens);
 					group.addNewGame(game);
@@ -196,7 +197,7 @@ public class GroupRepository {
 	private static Pattern rankingMemberPattern = Pattern.compile("(.+)-(.+)-(\\d+)");
 	
 	private Team searchOtherTeam(String[] tokens) {
-		Matcher matcher = rankingMemberPattern.matcher(tokens[3]);
+		Matcher matcher = rankingMemberPattern.matcher(tokens[2]);
 		if(matcher.matches()) {
 			String category = matcher.group(1);
 			String group = matcher.group(2);
@@ -207,7 +208,7 @@ public class GroupRepository {
 	}
 
 	private Team searchHomeTeam(String[] tokens) {
-		Matcher matcher = rankingMemberPattern.matcher(tokens[2]);
+		Matcher matcher = rankingMemberPattern.matcher(tokens[1]);
 		if(matcher.matches()) {
 			String category = matcher.group(1);
 			String group = matcher.group(2);
@@ -224,11 +225,11 @@ public class GroupRepository {
 			PrintWriter writer = new PrintWriter(buffer);
 			
 			for(Category category : this.categories) {
-				writer.println(category.getId() + "," + "CATEGORY" + "," + category.name() + ",");
+				writer.println("CATEGORY" + "," + category.name() + ",");
 				for(Group group : category.getGroups()) {
-					writer.println(group.getId() + "," + "GROUP" + "," + group.getName() + ",");
+					writer.println("GROUP" + "," + group.getName() + ",");
 					for(GroupMember member : group.getMembers()) {
-						writer.println(member.getId() + "," + "TEAM" + "," + member.getTeamName() + ",");
+						writer.println("TEAM" + "," + member.getTeamName() + ",");
 					}
 					for(Game game : group.getGames()) {
 						writeGame(writer,game,"GAME");
