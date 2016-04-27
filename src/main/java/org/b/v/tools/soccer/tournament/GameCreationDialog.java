@@ -354,7 +354,7 @@ public class GameCreationDialog extends JDialog {
 		combo.removeAllItems();
 		combo.addItem("-");
 		for(Group group : gamesRepository.getAllGroups()) {
-			combo.addItem(group.getName());
+			combo.addItem(group.getCategory().name() +":"  + group.getName());
 		}
 		
 		games.clean();
