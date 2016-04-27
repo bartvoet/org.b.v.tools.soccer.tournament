@@ -93,16 +93,11 @@ public class GroupRepository {
 				);
 	}
 	
-//	private Long getLong(String[] tokens,int index) {
-//		return Long.parseLong(tokens[index]);
-//	}
-	
 	private int getInt(String[] tokens,int index) {
 		return Integer.parseInt(tokens[index]);
 	}
 	
 	private void setEntity(Entity entity,String[] tokens) {
-		//entity.setId(getLong(tokens,0));
 		entity.setId(groupIds.incrementAndGet());
 	}
 

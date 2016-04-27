@@ -1,6 +1,5 @@
 package org.b.v.tools.soccer.tournament;
 
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -126,7 +125,5 @@ public class TournamentPanel extends JPanel {
 									  team.game.getHomeScore() + " - " + team.game.getOutScore(),
 									  team.game.isFinished()?"ja":"nee"});
 		}
-		
 	}
- 
 }

@@ -51,6 +51,8 @@ public class GameCreationDialog extends JDialog {
 	
 	private JButton switchButton;
 	
+	private JButton saveAndRefreshButon;	
+	
 	
 	
 	public GameCreationDialog(GroupRepository gamesRepository,UpdateEvent event) {
@@ -194,7 +196,9 @@ public class GameCreationDialog extends JDialog {
 					return false;
 				}
 
-			};	
+			};
+
+	
 
 	
 	
@@ -222,10 +226,12 @@ public class GameCreationDialog extends JDialog {
         cancelButton = new JButton("Cancel");
         removeButton = new JButton("Verwijderen");
         switchButton = new JButton("Wisselen");
+        saveAndRefreshButon = new JButton("Save");
         
         buttonPanel.add(generateButton);
         buttonPanel.add(addButton);
         buttonPanel.add(removeButton);
+        buttonPanel.add(saveAndRefreshButon);
         buttonPanel.add(saveAndExitButon);
         buttonPanel.add(cancelButton);
         buttonPanel.add(switchButton);
@@ -318,6 +324,16 @@ public class GameCreationDialog extends JDialog {
 		removeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//games.removeRows();
+			}
+		});
+		
+		saveAndRefreshButon.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int currentIndex = GameCreationDialog.this.combo.getSelectedIndex();
+				games.dump(new GameEntityFilter());
+				games.load(new GameEntityFilter());
+				GameCreationDialog.this.combo.setSelectedIndex(currentIndex);
+				//event.registerUpdate();
 			}
 		});
 		
