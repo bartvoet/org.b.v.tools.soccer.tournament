@@ -76,8 +76,13 @@ public class Game extends Entity {
 	
 	public Game onTime(int hour,int second) {
 		this.time=new Date();
-		Calendar.getInstance().set(Calendar.HOUR_OF_DAY, hour);
-		Calendar.getInstance().set(Calendar.MINUTE, second);
+		Calendar calendar = GregorianCalendar.getInstance();
+		calendar.setTime(getTime());
+		
+		calendar.set(Calendar.HOUR_OF_DAY, hour);
+		calendar.set(Calendar.MINUTE, second);
+		
+		this.time=calendar.getTime();
 		return this;
 	}
 
