@@ -117,7 +117,7 @@ public class Group extends Entity  {
 		
 	}
 
-	public Collection<Game> getGames() {
+	public List<Game> getGames() {
 		return this.games;
 	}
 	

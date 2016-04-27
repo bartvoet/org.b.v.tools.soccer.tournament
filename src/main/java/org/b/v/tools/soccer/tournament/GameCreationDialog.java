@@ -7,8 +7,12 @@ import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -235,6 +239,14 @@ public class GameCreationDialog extends JDialog {
 	private class GameEntityFilter implements EntityFilter<Game>{
 
 		public Collection<Game> getEntities() {
+			group.getGames().sort(new Comparator<Game>(){
+				@Override
+				public int compare(Game o1, Game o2) {
+					return o1.getTime().compareTo(o2.getTime());
+				}
+				
+			});
+			
 			return group.getGames();
 		}
 
