@@ -83,7 +83,7 @@ public class GroupRepository {
 	}
 
 	public void writeGame(PrintWriter writer,Game game,String suffix) {
-		writer.println(game.getId() + "," + "GAME" + suffix + "," 
+		writer.println(game.getId() + "," + suffix + "," 
 				+ game.getHome().getRepresentation() + "," 
 				+ game.getOther().getRepresentation()+ "," 
 				+ game.getHomeScore() + "," + game.getOutScore() + "," 
@@ -172,7 +172,7 @@ public class GroupRepository {
 					group.addNewGame(game);
 				}
 				
-				if("GAMEGLOBAL".equals(type)) {
+				if("RANKING".equals(type)) {
 					Game game = new Game(
 							searchHomeTeam(tokens),
 							searchOtherTeam(tokens));
@@ -231,13 +231,13 @@ public class GroupRepository {
 						writer.println(member.getId() + "," + "TEAM" + "," + member.getTeamName() + ",");
 					}
 					for(Game game : group.getGames()) {
-						writeGame(writer,game,"");
+						writeGame(writer,game,"GAME");
 					}
 				}
 			}
 			
 			for(Game game : this.nonGroupGames) {
-				writeGame(writer,game,"GLOBAL");
+				writeGame(writer,game,"RANKING");
 			}
 			
 			writer.flush();
@@ -253,53 +253,6 @@ public class GroupRepository {
 		
 	}
 	
-	/*
-	public void persist(String name) {
-		try {
-			FileOutputStream fileOutput = new FileOutputStream(new File(name));
-			BufferedOutputStream buffer = new BufferedOutputStream(fileOutput);
-			ObjectOutputStream objects = new ObjectOutputStream(buffer);
-			objects.writeObject(categories);
-			objects.writeObject(this.groups);
-			objects.writeObject(this.groupIds);
-			objects.writeObject(this.nonGroupGames);
-			objects.flush();
-			objects.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		writeCsv("/home/bart/test.csv");
-		
-	}
-
-	public void load(String name) {
-		try {
-			FileInputStream fileOutput = new FileInputStream(new File(name));
-			BufferedInputStream buffer = new BufferedInputStream(fileOutput);
-			ObjectInputStream objects = new ObjectInputStream(buffer);
-			this.categories = (List<Category>) objects.readObject();
-			this.groups = (List<Group>) objects.readObject();
-			this.groupIds = (AtomicLong) objects.readObject();
-			this.nonGroupGames = (List<Game>) objects.readObject();
-			objects.close();
-			
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}*/
-
 	public void removeNoGroupGame(Game entity) {
 		this.nonGroupGames.remove(entity);
 		
