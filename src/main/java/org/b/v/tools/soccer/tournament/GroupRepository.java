@@ -165,8 +165,9 @@ public class GroupRepository {
 				}
 
 				if("GAME".equals(type)) {
-					Game game = new Game(group.getMemberById(getLong(tokens,2)),
-										 group.getMemberById(getLong(tokens,3)));
+					Game game = new Game(group.getMemberByName(tokens[2]),
+										group.getMemberByName(tokens[3]));
+					
 					populateGame(game,tokens);
 					group.addNewGame(game);
 				}

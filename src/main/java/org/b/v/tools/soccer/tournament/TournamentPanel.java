@@ -64,9 +64,11 @@ public class TournamentPanel extends JPanel {
     	
     	for(Group group :teamsPerGroup) {
     		Collection<Ranking> rankings = group.calculateRanking();
-    		groupModel.addRow(new Object[]{group.getName()});
+    		groupModel.addRow(new Object[]{group.getCategory().name() + " " + group.getName()});
     		for(Ranking ranking : rankings) {
-    			groupModel.addRow(new Object[]{"",ranking.getMember().getTeamName(),ranking.getPoints()});
+    			groupModel.addRow(new Object[]{"",
+    						ranking.getMember().getTeamName(),
+    						ranking.getPoints()});
     		}
     	}
     }

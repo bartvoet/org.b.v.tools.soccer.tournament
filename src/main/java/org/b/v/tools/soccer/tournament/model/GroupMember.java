@@ -15,8 +15,7 @@ public class GroupMember extends Entity implements Team {
 	}
 
 	public String getRepresentation() {
-		return this.getId().toString();
+		return this.teamName;
 	}
-	
 	
 }
