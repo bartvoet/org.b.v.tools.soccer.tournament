@@ -18,7 +18,7 @@ public class SaveToFileState {
 	private String currentFile;
 	
     private static FileNameExtensionFilter filter = 
-    		new FileNameExtensionFilter("Tournament file", "trm");
+    		new FileNameExtensionFilter("Tournament file (csv)", "trm","csv");
 	
 	public SaveToFileState(Component parent,GroupRepository gamesRepository) {
 		this.gamesRepository=gamesRepository;
