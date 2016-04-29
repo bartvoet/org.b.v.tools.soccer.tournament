@@ -100,7 +100,7 @@ public class GroupDialog extends JDialog {
 	
 	private EntityMapper<GroupMember> groupMemberMapper =
 		new EntityMapper<GroupMember>() {
-			final String[] columnNames = {"Teamnaam",""};
+			final String[] columnNames = {"Teamnaam","Select"};
 			@SuppressWarnings("rawtypes")
 			final Class[] types = new Class [] {java.lang.String.class, java.lang.Boolean.class};
 			

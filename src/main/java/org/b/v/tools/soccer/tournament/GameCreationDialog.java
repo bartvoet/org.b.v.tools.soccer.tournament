@@ -81,7 +81,7 @@ public class GameCreationDialog extends JDialog {
 	
 	private EntityMapper<Game> groupMemberMapper =
 			new EntityMapper<Game>() {
-				final String[] columnNames = {"Thuis","Uit","Score","Penalties","Veld","Tijdstip","Gedaan",""};
+				final String[] columnNames = {"Thuis","Uit","Score","Penalties","Veld","Tijdstip","Gedaan","Select"};
 				@SuppressWarnings("rawtypes")
 				final Class[] types = new Class [] {
 						java.lang.String.class,
