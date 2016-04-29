@@ -11,7 +11,6 @@ import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import org.b.v.tools.soccer.tournament.model.Game;
@@ -25,6 +24,9 @@ public class TournamentPanel extends JPanel {
 	private DefaultTableModel gameModel;
 	private DefaultTableModel groupModel;
 	
+	private RowTable table;
+	private RowTable groupTable;
+	
     public TournamentPanel() {
     	super(new BorderLayout());
     	GridBagConstraints c = new GridBagConstraints();
@@ -35,7 +37,7 @@ public class TournamentPanel extends JPanel {
         Object[][] data = {};
         gameModel=new DefaultTableModel(data, columnNames);
         
-        final JTable table = new JTable(gameModel);
+        table = new RowTable(gameModel);
         table.setPreferredScrollableViewportSize(new Dimension(500, 200));
         table.setFillsViewportHeight(true);
         JScrollPane scrollPane = new JScrollPane(table);
@@ -45,7 +47,7 @@ public class TournamentPanel extends JPanel {
         Object[][] groupEata = {};//{{"U17","Baal","10"}};
         
         groupModel=new DefaultTableModel(groupEata, groupColumnNames);
-        final JTable groupTable = new JTable(groupModel);   
+        groupTable = new RowTable(groupModel);   
         groupTable.setPreferredScrollableViewportSize(new Dimension(500, 200));
         groupTable.setFillsViewportHeight(true);
         JScrollPane datascrollPane = new JScrollPane(groupTable);
