@@ -163,7 +163,10 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 				JTextArea text = new JTextArea();
 				text.setText(
 						  "TODO's:\n"
-						+ "* Refining rules of points" );
+						+ "* Winnaar forceren (loting)\n" 
+						+ "* Filteren op wedstrijden -1 uur en + 1 uur\n" 
+						+ "* Kleuren toekennen aan wedstrijden (gedaan,bezig, ...)\n"
+						+ "* Refresh, automatisch lezen van de file");
 				todo.add(text);
 				todo.setVisible(true);
 			}
