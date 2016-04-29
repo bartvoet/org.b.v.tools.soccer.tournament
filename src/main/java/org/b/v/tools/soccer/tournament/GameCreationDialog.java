@@ -26,6 +26,7 @@ import org.b.v.tools.soccer.tournament.extra.EntityMapper;
 import org.b.v.tools.soccer.tournament.extra.EntityTableModel;
 import org.b.v.tools.soccer.tournament.model.Game;
 import org.b.v.tools.soccer.tournament.model.Group;
+import org.b.v.tools.soccer.tournament.model.TimeOfDay;
 
 public class GameCreationDialog extends JDialog {
 
@@ -146,19 +147,21 @@ public class GameCreationDialog extends JDialog {
 					return entity;
 				}
 
-				private Date parseTime(String string) {
+				private TimeOfDay parseTime(String string) {
 					Matcher matcher = timePattern.matcher(string);
 					if(matcher.matches()) {
-						DateFormat format = new SimpleDateFormat("hh:mm");
 						try {
-							return format.parse(string);
-						} catch (ParseException e) {
+							return new TimeOfDay(
+									Integer.parseInt(matcher.group(1)),
+									Integer.parseInt(matcher.group(2))
+								);
+						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
 					
-					return new Date();
+					return new TimeOfDay(0,0);
 				}
 
 				private int parseFirstScore(Object object) {

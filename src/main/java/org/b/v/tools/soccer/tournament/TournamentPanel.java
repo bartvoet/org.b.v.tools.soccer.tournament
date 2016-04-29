@@ -59,7 +59,6 @@ public class TournamentPanel extends JPanel {
         add(datascrollPane,BorderLayout.EAST);
     }
     
-
 	private static Color rgb(int r,int g,int b) {
 		return new Color(r,g,b);
 	}

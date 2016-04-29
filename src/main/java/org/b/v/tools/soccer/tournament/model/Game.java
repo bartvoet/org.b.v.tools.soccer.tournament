@@ -14,7 +14,7 @@ public class Game extends Entity {
 	private int outScore;
 	private int homePenalties;
 	private int outPenalties;
-	private Date time=new Date();
+	private TimeOfDay time=new TimeOfDay(0,0);
 	private String field="A";
 	
 	private boolean isFinished;
@@ -71,7 +71,7 @@ public class Game extends Entity {
 		return this;
 	}
 
-	public Date getTime() {
+	public TimeOfDay getTime() {
 		return this.time;
 	}
 
@@ -84,28 +84,18 @@ public class Game extends Entity {
 		return this;
 	}
 
-	public Game onTime(Date time) {
+	public Game onTime(TimeOfDay time) {
 		this.time=time;
 		return this;
 	}
 	
 	public Game onTime(int hour,int second) {
-		this.time=new Date();
-		Calendar calendar = GregorianCalendar.getInstance();
-		calendar.setTime(getTime());
-		
-		calendar.set(Calendar.HOUR_OF_DAY, hour);
-		calendar.set(Calendar.MINUTE, second);
-		
-		this.time=calendar.getTime();
+		this.time=new TimeOfDay(hour,second);
 		return this;
 	}
 
 	public String extractHour() {
-		Calendar calendar = GregorianCalendar.getInstance();
-		calendar.setTime(getTime());
-		
-		int hour = calendar.get(Calendar.HOUR_OF_DAY);
+		int hour = this.time.getHour();
 		
 		if(hour < 10) {
 			return "0" + Integer.toString(hour);
@@ -115,15 +105,12 @@ public class Game extends Entity {
 	}
 	
 	public String extractMinutes() {
-		Calendar calendar = GregorianCalendar.getInstance();
-		calendar.setTime(getTime());
-		
-		int minutes = calendar.get(Calendar.MINUTE);
+		int minutes = this.time.getMinutes();
 		if(minutes < 10) {
-			return "0" + Integer.toString(calendar.get(Calendar.MINUTE));
+			return "0" + minutes;
 		}
 		
-		return Integer.toString(calendar.get(Calendar.MINUTE));
+		return Integer.toString(minutes);
 	}
 	
 	public String getTimeAsString() {
