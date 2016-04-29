@@ -6,6 +6,9 @@ import javax.swing.*;
 import javax.swing.table.*;
 
 public class RowTable extends JTable {
+
+	private static final long serialVersionUID = 1L;
+	
 	Map<Integer, Color> rowColor = new HashMap<Integer, Color>();
 
 	public RowTable(TableModel model) {

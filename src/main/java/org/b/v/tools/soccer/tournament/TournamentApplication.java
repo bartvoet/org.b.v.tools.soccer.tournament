@@ -1,11 +1,14 @@
 package org.b.v.tools.soccer.tournament;
 
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -166,7 +169,8 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 						+ "* Winnaar forceren (loting)\n" 
 						+ "* Filteren op wedstrijden -1 uur en + 1 uur\n" 
 						+ "* Kleuren toekennen aan wedstrijden (gedaan,bezig, ...)\n"
-						+ "* Refresh, automatisch lezen van de file");
+						+ "* Refresh, automatisch lezen van de file"
+						);
 				todo.add(text);
 				todo.setVisible(true);
 			}
@@ -189,7 +193,7 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 		fileState.markChange();
 		refreshScreens();
 	}
-
+	
 	private void refreshScreens() {
 		this.newContentPane.refreshGroups(gamesRepository.getAllGroups());
 		this.newContentPane.refreshGames(gamesRepository.getAllGroups(),
