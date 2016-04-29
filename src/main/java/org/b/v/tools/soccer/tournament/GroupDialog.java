@@ -122,6 +122,7 @@ public class GroupDialog extends JDialog {
 
 			@Override
 			public GroupMember map(GroupMember entity, Object[] data) {
+				entity.setTeamName((String)data[0]);
 				return entity;
 			}
 
