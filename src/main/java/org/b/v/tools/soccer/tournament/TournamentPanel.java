@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
+import java.awt.print.PrinterException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -168,5 +169,24 @@ public class TournamentPanel extends JPanel {
 			
 			counter++;
 		}
+	}
+
+	public void printMatches() {
+		try {
+			this.table.print();
+		} catch (PrinterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void printRanking() {
+		try {
+			this.groupTable.print();
+		} catch (PrinterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 }

@@ -1,14 +1,11 @@
 package org.b.v.tools.soccer.tournament;
 
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.util.Map;
-import java.util.TreeMap;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -50,9 +47,34 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
         setJMenuBar(menuBar);
 		initializeTheFileMenu(menuBar);
 		initializeTheAdminstrationMenu(menuBar);
+		initializeThePrintMenu(menuBar);
 		initializeTheHelpMenu(menuBar);
 	}
 
+	private void initializeThePrintMenu(JMenuBar menuBar) {
+		JMenu menu = new JMenu("Printen");
+        menu.setMnemonic(KeyEvent.VK_P); 
+        menuBar.add(menu);
+        
+        JMenuItem printMatches = new JMenuItem("Wedstrijden afdrukken");
+        printMatches.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				newContentPane.printMatches();
+			}
+        });
+        menu.add(printMatches);
+        
+        JMenuItem printRanking = new JMenuItem("Klassement afdrukken");
+        printRanking.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				newContentPane.printRanking();
+			}
+        });
+        menu.add(printRanking);
+        
+	}
 	
 	private void initializeTheAdminstrationMenu(JMenuBar menuBar) {
 		JMenu menu = new JMenu("Acties");

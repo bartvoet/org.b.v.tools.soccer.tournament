@@ -326,7 +326,7 @@ public class GameCreationDialog extends JDialog {
 		
 		removeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//games.removeRows();
+				games.removeRows();
 			}
 		});
 		
