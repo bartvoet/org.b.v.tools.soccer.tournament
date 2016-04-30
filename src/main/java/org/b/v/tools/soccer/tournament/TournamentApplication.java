@@ -158,9 +158,6 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 
 	private SaveToFileState fileState = new SaveToFileState(this, gamesRepository);
 	
-    private static FileNameExtensionFilter filter = 
-    		new FileNameExtensionFilter("Tournament file", "trm");
-
 	private JMenuItem saveTournamentAs = new JMenuItem("Bewaar als");
 	private JMenuItem saveTournament = new JMenuItem("Bewaar");
 	private JMenuItem openTournament = new JMenuItem("Open");
