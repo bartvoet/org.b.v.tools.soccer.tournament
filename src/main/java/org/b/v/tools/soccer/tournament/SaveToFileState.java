@@ -86,5 +86,9 @@ public class SaveToFileState {
 		this.currentFile = null;
 		this.state = FileState.NEW;
 	}
+
+	public boolean isNotSaved() {
+		return this.state==FileState.LOADED_NOT_SAVED || state==FileState.NEW_NOT_SAVED;
+	}
 	
 }

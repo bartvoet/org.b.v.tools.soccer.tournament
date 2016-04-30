@@ -6,12 +6,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -30,16 +33,48 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 		
 	public TournamentApplication() {
 		super("Tornooi");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         
         newContentPane.setOpaque(true); 
         setContentPane(newContentPane);
         
         initializeTheMenu();
+        initSaveOnExit();
  
         pack();
         setVisible(true);
+	}
+	
+	private void initSaveOnExit() {
+		this.addWindowListener(new WindowAdapter() {
+		    public void windowClosing(WindowEvent e) {
+		    	if(fileState.isNotSaved()) {//needs saving
+			    	int confirm = 
+			    			JOptionPane.showOptionDialog(frame,
+		                        "De file dient nog bewaard worden, druk Yes als je wil bewaren, ander No",
+		                        "Druk Cancel als je niet wil sluiten", 
+		                        JOptionPane.YES_NO_CANCEL_OPTION,
+		                        JOptionPane.QUESTION_MESSAGE, 
+		                        null, 
+		                        null, 
+		                        null);
+			    	
+	                switch(confirm) {
+		                case(JOptionPane.YES_OPTION): {
+		                	fileState.save();
+		                	TournamentApplication.this.dispose();
+		                }
+		                case(JOptionPane.NO_OPTION): {
+		                	TournamentApplication.this.dispose();
+		                }
+		                case(JOptionPane.CANCEL_OPTION) :{/*DO NOTHING*/}
+	                }
+			    } else {
+			    	TournamentApplication.this.dispose();
+			    }
+		    }
+		});
 	}
 
 	private void initializeTheMenu() {
