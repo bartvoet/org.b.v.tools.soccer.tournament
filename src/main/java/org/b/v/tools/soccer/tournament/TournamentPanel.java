@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.print.PrinterException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -171,6 +172,107 @@ public class TournamentPanel extends JPanel {
 		}
 	}
 
+	
+	public Collection<Combination> allCombinations(Collection<Group> allGroups,Collection<Game> nonGroupGames) {
+  	
+    	List<Combination> allMatches = new ArrayList<Combination>();
+    	
+    	for(Group group :allGroups) {
+    		Collection<Game> teams = group.getGames();
+    		for(Game team : teams) {
+    			allMatches.add(new Combination(group,team));
+    		}
+    	}
+    	
+    	for(Game team: nonGroupGames) {
+    		allMatches.add(new Combination(team));
+    	}
+    	
+    	Collections.sort(allMatches, new Comparator<Combination>() {
+    		public int compare(Combination o1, Combination o2) {
+    			return o1.game.getTime().compareTo(o2.game.getTime());
+    		}
+    	});
+    	
+    	return allMatches;
+	}
+	
+	private String node(String name,String value) {
+		return "\"" + name + "\":" + "\"" + value + "\",";
+	}
+	
+	private String lastNode(String name,String value) {
+		return "\"" + name + "\":" + "\"" + value + "\"";
+	}
+	
+	public String colorAsHexValue(Color color) {
+		return  String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
+	}
+	
+	public void exportJson(Collection<Group> allGroups,Collection<Game> nonGroupGames,PrintStream stream) {
+		stream.println("[");
+		boolean first = true;
+		for(Combination team : allCombinations(allGroups,nonGroupGames)) {
+			if(!first) {
+				stream.print(",");
+			}
+			first = false;
+			stream.println(
+					"{" +
+					node("home",team.game.getHome().getTeamName()) +
+					node("out", team.game.getOther().getTeamName()) +
+					node("group",team.getGroupName()) +
+					node("field",team.game.getField()) +
+					node("time",team.game.getTimeAsString()) +
+					node("score",team.game.getHomeScore() + " - " + team.game.getOutScore()) +
+					node("penalties",team.game.getHomePenalties() + " - " + team.game.getOutPenalties()) +
+					node("finished",(team.game.isFinished()?"ja":"nee")) +
+					lastNode("groupColor", "" + (team.group !=null ?
+													(colorAsHexValue(colorForGroup(team.group.getId().intValue())))
+													:"#ffffff")
+							) +
+					"}"
+			);
+			
+
+		}
+		stream.print("]");
+	}
+	
+	public void exportRankingJson(Collection<Group> teamsPerGroup,PrintStream stream) {
+		stream.println("[");
+		boolean firstGroup = true;
+		
+		
+		for(Group group :teamsPerGroup) {
+			if(!firstGroup) {
+				stream.print(",");
+			}
+			stream.print("{");
+			firstGroup=false;
+    		Collection<Ranking> rankings = group.calculateRanking();
+    		stream.print(node("group",group.getCategory().name() + " " + group.getName()));
+    		stream.print(node("color","" + (colorAsHexValue(colorForGroup(group.getId().intValue())))));
+    		
+    		boolean first = true;
+    		stream.println("\"teams\":[");
+    		for(Ranking ranking : rankings) {
+    			if(!first) {
+    				stream.print(",");
+    			}
+    			first=false;
+
+    			stream.print("{");
+    			stream.print(node("team",ranking.getMember().getTeamName()));
+    			stream.print(lastNode("points","" + ranking.getPoints()));
+    			stream.print("}");
+    		}
+    		stream.println("]}");
+    	}
+		stream.println("]");
+	}
+
+	
 	public void printMatches() {
 		try {
 			this.table.print();
