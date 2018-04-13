@@ -8,6 +8,12 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.net.URL;
+import java.net.HttpURLConnection;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -17,7 +23,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.SwingWorker;
 
 public class TournamentApplication extends JFrame implements UpdateEvent {
 
@@ -162,6 +168,7 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 	private JMenuItem saveTournament = new JMenuItem("Bewaar");
 	private JMenuItem openTournament = new JMenuItem("Open");
 	private JMenuItem newTournament = new JMenuItem("Nieuw");
+	private JMenuItem saveAndSendTournament = new JMenuItem("Verstuur");
     
 	
 	private void initializeTheFileMenu(JMenuBar menuBar) {
@@ -172,6 +179,7 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
         menu.add(saveTournamentAs);
         menu.add(saveTournament);
         menu.add(newTournament);
+        menu.add(saveAndSendTournament);
         menuBar.add(menu);
         
         saveTournament.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
@@ -205,6 +213,96 @@ public class TournamentApplication extends JFrame implements UpdateEvent {
 				registerUpdate();
 			}
 		});
+        
+        saveAndSendTournament.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				try {
+					TournamentApplication.this.sendPost();
+					postWorker.execute();
+					
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+
+	}
+	
+	private SwingWorker<Void, Void> postWorker = new SwingWorker<Void, Void>() {
+
+		@Override
+		protected Void doInBackground() throws Exception {
+			sendPost();
+			sendPostRanking();
+			return null;
+		}
+		
+	};
+	
+	// HTTP POST request
+	private int sendPost() throws Exception {
+
+		String url = "http://www.bvminecraft.org:8003/matches.json";
+		URL obj = new URL(url);
+		java.net.HttpURLConnection con = (java.net.HttpURLConnection) obj.openConnection();
+
+		//add reuqest header
+		con.setRequestMethod("POST");
+		con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+
+		
+		// Send post request
+		con.setDoOutput(true);
+		newContentPane.exportJson(gamesRepository.getAllGroups(),
+				 gamesRepository.getAllNonGroupGames(), new PrintStream(con.getOutputStream()));
+		
+
+		int responseCode = con.getResponseCode();
+
+		BufferedReader in = new BufferedReader(
+		        new InputStreamReader(con.getInputStream()));
+		String inputLine;
+		StringBuffer response = new StringBuffer();
+
+		while ((inputLine = in.readLine()) != null) {
+			response.append(inputLine);
+		}
+		in.close();
+		return responseCode;
+
+	}
+	
+	private int sendPostRanking() throws Exception {
+
+		String url = "http://www.bvminecraft.org:8003/ranking.json";
+		URL obj = new URL(url);
+		java.net.HttpURLConnection con = (java.net.HttpURLConnection) obj.openConnection();
+
+		//add reuqest header
+		con.setRequestMethod("POST");
+		con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+
+		
+		// Send post request
+		con.setDoOutput(true);
+		newContentPane.exportRankingJson(gamesRepository.getAllGroups(),new PrintStream(con.getOutputStream()));
+		
+
+		int responseCode = con.getResponseCode();
+
+		BufferedReader in = new BufferedReader(
+		        new InputStreamReader(con.getInputStream()));
+		String inputLine;
+		StringBuffer response = new StringBuffer();
+
+		while ((inputLine = in.readLine()) != null) {
+			response.append(inputLine);
+		}
+		in.close();
+		return responseCode;
 
 	}
 	
