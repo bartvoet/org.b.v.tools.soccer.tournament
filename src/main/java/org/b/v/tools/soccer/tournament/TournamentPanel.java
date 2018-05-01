@@ -146,7 +146,17 @@ public class TournamentPanel extends JPanel {
     	
     	Collections.sort(allMatches, new Comparator<Combination>() {
     		public int compare(Combination o1, Combination o2) {
-    			return o1.game.getTime().compareTo(o2.game.getTime());
+    			int r = o1.game.getTime().compareTo(o2.game.getTime());
+    			if(r == 0) {
+    				String field1 = o1.game.getField();
+    				String field2 = o2.game.getField();
+    				
+    				field1 = field1 == null?"":field1;
+    				field2 = field2 == null?"":field2;
+    				
+    				return field1.compareTo(field2);
+    			}
+    			return r;
     		}
     	});
     	
