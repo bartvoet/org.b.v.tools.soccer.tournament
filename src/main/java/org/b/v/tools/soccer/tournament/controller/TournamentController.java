@@ -1,30 +1,47 @@
 package org.b.v.tools.soccer.tournament.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-public class SpicaCoinController {
+public class TournamentController {
 	
-	private static Logger LOG = Logger.getLogger(SpicaCoinController.class);
+	private static Logger LOG = Logger.getLogger(TournamentController.class);
 	
-//	@Autowired
-//	private GreetingRepository repo;
-//	
-//	@Autowired
-//	private BalanceRepository balanceRepo;
-	
-	public SpicaCoinController() {
+	public TournamentController() {
 	}
 	
-	@RequestMapping("/tournament/{name}")
-	public String createTournament(@PathVariable("name") String name) {
+	@RequestMapping(value="/tournament/{name}",method = RequestMethod.GET)
+	public String lookForTournament(@PathVariable("name") String name) {
 		LOG.debug(name);
 		return "aha";
 	}
+
+	@RequestMapping(value="/tournament/{name}",method = RequestMethod.POST)
+	public String createTournament(@PathVariable("name") String name) {
+		
+		return "aha";
+	}
+
+	@RequestMapping(value="/tournament/{name}/teams",method = RequestMethod.GET)
+	public List<String> lookForTeams(@PathVariable("name") String name) {
+		LOG.debug(name);
+		return new ArrayList<String>();
+	}
+
+	@RequestMapping(value="/tournament/{name}/groups",method = RequestMethod.GET)
+	public List<String> lookForGroups(@PathVariable("name") String name) {
+		LOG.debug(name);
+		return new ArrayList<String>();
+	}
+	
 	
 //	@RequestMapping(value="/greeting",method = RequestMethod.GET)
 //	public Greeting greeting() {
